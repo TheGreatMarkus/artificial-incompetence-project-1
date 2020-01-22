@@ -21,6 +21,7 @@ def execute_dfs(grid, max_d, goal, puzzle_number):
     :param (int) puzzle_number: line number of the puzzle for which DFS is executed
     :return: void
     """
+    print('Execute DFS with max depth {} on grid \n{} '.format(max_d, grid))
     configuration = get_configuration(grid)
     visited = set()
     search_path = []
@@ -44,7 +45,7 @@ def dfs(grid, configuration, visited, search_path, solution_path, max_d, goal):
     if configuration == goal:
         search_path.append(get_search_move(constant.DFS, configuration))
         return copy.deepcopy(solution_path)
-    if max_d == 0 or configuration in visited:
+    if max_d <= 0 or configuration in visited:
         return constant.NO_SOLUTION
 
     visited.add(configuration)
@@ -53,11 +54,12 @@ def dfs(grid, configuration, visited, search_path, solution_path, max_d, goal):
 
     for row in range(len(grid)):
         for col in range(len(grid)):
-            if grid[row][col] == 1 and type(ans) is str:
+            if type(ans) is str:
                 grid_copy = np.copy(grid)
                 flip(grid_copy, row, col)
                 grid_copy_configuration = get_configuration(grid_copy)
                 solution_path.append(get_solution_move(row, col, grid_copy_configuration))
                 ans = dfs(grid_copy, grid_copy_configuration, visited, search_path, solution_path, max_d - 1, goal)
                 solution_path.pop()
+    visited.remove(configuration)
     return ans
