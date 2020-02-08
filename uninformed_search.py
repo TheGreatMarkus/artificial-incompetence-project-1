@@ -6,9 +6,7 @@
 # Copyright (c) 2020-2021 Team Artificial Incompetence, Comp 472
 # All rights reserved.
 # -----------------------------------------------------------
-import copy
-import numpy as np
-from utils import flip, get_configuration, get_solution_move, get_search_move, write_results
+from utils import *
 import constant
 
 
@@ -22,44 +20,39 @@ def execute_dfs(grid, max_d, goal, puzzle_number):
     :return: void
     """
     print('Execute DFS with max depth {} on grid \n{} '.format(max_d, grid))
+    open_list = []
     configuration = get_configuration(grid)
-    visited = set()
+    seen_states = set()
     search_path = []
-    solution_path = ['{}   {}'.format(0, configuration)]
-    solution_path = dfs(grid, configuration, visited, search_path, solution_path, max_d, goal)
+    root = (grid, 1, ['{}   {}'.format(0, configuration)])
+    open_list.append(root)
+    seen_states.add(configuration)
+    solution_path = dfs(open_list, seen_states, search_path, goal, max_d)
     write_results(solution_path, search_path, puzzle_number)
+    print('Found no solution' if solution_path == constant.NO_SOLUTION
+          else 'Found result in {} moves'.format(len(solution_path) - 1))
 
 
-def dfs(grid, configuration, visited, search_path, solution_path, max_d, goal):
+def dfs(open_list, seen_states, search_path, goal, max_d):
     """
-    Maximum depth DFS
-    :param (ndarray) grid: numpy 2-D array
-    :param (string) configuration: serialized input grid
-    :param (set) visited: previously visited configurations
-    :param (list) search_path: close list of searched nodes
-    :param (list | string) solution_path: path up to identified solution. List of paths or 'no solution'
-    :param (int) max_d: maximum depth
-    :param (string) goal: serialized goal grid
+    Iterative DFS.
+    Each node in the open list carries: grid, level and a solution_path up to this grid
+    :param (stack) open_list: stack of yet to be processed grids
+    :param (set) seen_states: configurations seen so far
+    :param (list) search_path: path up to the specific node
+    :param (string) goal: goal configuration
+    :param (int) max_d: maximum execution depth
     :return (list | string): path up to identified solution. List of paths or 'no solution'
     """
-    if configuration == goal:
-        search_path.append(get_search_move(constant.DFS, configuration))
-        return copy.deepcopy(solution_path)
-    if max_d <= 0 or configuration in visited:
-        return constant.NO_SOLUTION
-
-    visited.add(configuration)
-    search_path.append(get_search_move(constant.DFS, configuration))
-    ans = constant.NO_SOLUTION
-
-    for row in range(len(grid)):
-        for col in range(len(grid)):
-            if type(ans) is str:
-                grid_copy = np.copy(grid)
-                flip(grid_copy, row, col)
-                grid_copy_configuration = get_configuration(grid_copy)
-                solution_path.append(get_solution_move(row, col, grid_copy_configuration))
-                ans = dfs(grid_copy, grid_copy_configuration, visited, search_path, solution_path, max_d - 1, goal)
-                solution_path.pop()
-    visited.remove(configuration)
-    return ans
+    while len(open_list) > 0:
+        grid_level_solution = open_list.pop()
+        grid = grid_level_solution[0]
+        level = grid_level_solution[1]
+        solution_path = grid_level_solution[2]
+        config = get_configuration(grid)
+        search_path.append(get_search_move(constant.DFS, config))
+        if config == goal:
+            return solution_path
+        if level < max_d:
+            evaluate_children(open_list, grid, solution_path, seen_states, level)
+    return constant.NO_SOLUTION
