@@ -23,17 +23,17 @@ def flip(x):
 
 
    
-#implementation of dfs 
+#implementation of dfs
 def dfs(maxd, state, p):
     if winCheck(state):
         p.append(stringVal(state))
         return state
     
     if maxd == 0:
-        return 
+        return
     
     if stringVal(state) in states:
-        return 
+        return
     for i in range (len(state)):
         for j in range (len(state[i])):
             
@@ -51,7 +51,33 @@ def dfs(maxd, state, p):
                 
     return p
 
-#turns matrix to a string to add to states set        
+def dfs2(state, path, depth):
+    p = path
+    
+    s = state
+    if stringVal(s) in p:
+        return p
+    p.append(stringVal(s))
+    
+    if(winCheck(s)):
+        #p.append(stringVal(s))
+        return p
+    if depth == 0:
+        p.pop()
+        return p
+    
+    for i in range (len(s)):
+        for j in range (len(s[i])):
+            b =dfs2(move(i, j, s), p, depth-1)
+            if stringVal(goalArr) in b:
+                return b
+    if p != []:
+        p.pop()
+                      
+    return p
+
+
+#turns matrix to a string to add to states set
 def stringVal(matrix):
     s = ""
     for i in range (len(matrix)):
@@ -116,9 +142,10 @@ for row in inputs:
     boardArr = np.reshape(boardArr, (size, size))
     print(maxd)
     print("start board: \n" , boardArr, "\n\n")
-    print(dfs(maxd, boardArr, path))
+    print(dfs2(boardArr, path, maxd))
   # print("\n\n", states)
     
    
+
 
 
