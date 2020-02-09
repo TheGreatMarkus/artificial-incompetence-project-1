@@ -26,7 +26,7 @@ def search_puzzle(puzzle, puzzle_number):
 def main(file_path):
     """
     Read file and execute search for each puzzle
-    :param (string) file_path:
+    :param (string) file_path: relative path to the input file
     :return: void
     """
     with open(file_path) as fp:

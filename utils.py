@@ -14,10 +14,10 @@ from heuristic import get_heuristic
 
 def flip(grid, r, c):
     """
-    Flip currect token and 4 adjacent cells. Up, Down, Left, Right
+    Flip current token and 4 adjacent cells. Up, Down, Left, Right
     :param (ndarray) grid: numpy 2-D array
-    :param (int) r: row number. Index wise
-    :param (int) c: column number. Index wise
+    :param (int) r: row index
+    :param (int) c: column index
     :return: void
     """
     dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]]
@@ -54,7 +54,7 @@ def construct_grid(board, n):
     """
     Construct 2-D numpy array of provided shape
     :param (string) board: grid data
-    :param (int) n: grid shape
+    :param (int) n: grid size
     :return (ndarray): 2-D numpy grid
     """
     grid = np.empty([n, n], dtype=int)
@@ -70,6 +70,7 @@ def construct_grid(board, n):
 def get_goal_state(n):
     """
     Get serialized version of the goal grid
+    Example: (n = 3) => '000000000'
     :param (int) n: shape of the 2-D grid, filled with zeros
     :return (string): serialized version of the goal grid
     """
@@ -80,7 +81,7 @@ def get_goal_state(n):
 def get_solution_move(row, col, configuration):
     """
     Prepend configuration with a required token format
-    Example: row = 0, col = 0, config = '1 1 0 0' converted 'A1  1 1 0 0'
+    Example: row = 0, col = 0, config = '1 1 0 0' => 'A1  1 1 0 0'
     :param (int) row: row number. Index wise
     :param (int) col: column number. Index wise
     :param (string) configuration: serialized version of the grid
@@ -139,7 +140,7 @@ def sort_children(children):
     Sort children in descending order of their White Tokens.
     Meaning that the next best choice is at the very end of the returning list.
     Sorting takes into account Scenario 2, provided in a handout.
-    Ex.
+    Example:
         Input:'1010011', '1010101', '1010110', '1110011', '1111111'
         Output: '1111111', '1110011', '1010110', '1010101', '1010011'
     :param (list) children: Unsorted configuration grids

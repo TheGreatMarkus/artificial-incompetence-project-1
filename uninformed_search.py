@@ -13,7 +13,7 @@ import constant
 def execute_dfs(grid, max_d, goal, puzzle_number):
     """
     Wrapper for DFS
-    :param (ndarray) grid: numpy 2-D array
+    :param (ndarray) grid: numpy 2-D array representation of the input board
     :param (int) max_d: maximum depth
     :param (string) goal: serialized goal grid
     :param (int) puzzle_number: line number of the puzzle for which DFS is executed
