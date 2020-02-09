@@ -22,11 +22,11 @@ def execute_dfs(grid, max_d, goal, puzzle_number):
     print('Execute DFS with max depth {} on grid \n{} '.format(max_d, grid))
     open_list = []
     configuration = get_configuration(grid)
-    seen_states = set()
+    seen_states = {}
     search_path = []
     root = (grid, 1, ['{}   {}'.format(0, configuration)])
     open_list.append(root)
-    seen_states.add(configuration)
+    seen_states[configuration] = 1
     solution_path = dfs(open_list, seen_states, search_path, goal, max_d)
     write_results(solution_path, search_path, puzzle_number)
     print('Found no solution' if solution_path == constant.NO_SOLUTION
@@ -38,7 +38,7 @@ def dfs(open_list, seen_states, search_path, goal, max_d):
     Iterative DFS.
     Each node in the open list carries: grid, level and a solution_path up to this grid
     :param (stack) open_list: stack of yet to be processed grids
-    :param (set) seen_states: configurations seen so far
+    :param (dictionary) seen_states: grid config and its corresponding depth
     :param (list) search_path: path up to the specific node
     :param (string) goal: goal configuration
     :param (int) max_d: maximum execution depth

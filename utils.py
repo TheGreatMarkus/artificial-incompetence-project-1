@@ -110,7 +110,7 @@ def evaluate_children(open_list, grid, solution_path, seen_states, level):
     :param (stack) open_list: stack of yet to be processed grids
     :param (ndarray) grid: Parent 2-D array
     :param (list) solution_path: Path to the parent grid
-    :param (set) seen_states: configurations seen so far
+    :param (dictionary) seen_states: grid config and its corresponding depth
     :param (int) level: Level of the parent grid
     :return:
     """
@@ -122,8 +122,8 @@ def evaluate_children(open_list, grid, solution_path, seen_states, level):
             grid_copy = np.copy(grid)
             flip(grid_copy, row, col)
             grid_copy_config = get_configuration(grid_copy)
-            if grid_copy_config not in seen_states:
-                seen_states.add(grid_copy_config)
+            if grid_copy_config not in seen_states or seen_states[grid_copy_config] > level + 1:
+                seen_states[grid_copy_config] = level + 1
                 solution_move_child = get_solution_move(row, col, grid_copy_config)
                 copy_solution_path = copy.deepcopy(solution_path)
                 copy_solution_path.append(solution_move_child)
