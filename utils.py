@@ -6,6 +6,7 @@
 # Copyright (c) 2020-2021 Team Artificial Incompetence, Comp 472
 # All rights reserved.
 # -----------------------------------------------------------
+import copy
 import numpy as np
 import constant
 from heuristic import get_heuristic
@@ -13,10 +14,10 @@ from heuristic import get_heuristic
 
 def flip(grid, r, c):
     """
-    Flip currect token and 4 adjacent cells. Up, Down, Left, Right
+    Flip current token and 4 adjacent cells. Up, Down, Left, Right
     :param (ndarray) grid: numpy 2-D array
-    :param (int) r: row number. Index wise
-    :param (int) c: column number. Index wise
+    :param (int) r: row index
+    :param (int) c: column index
     :return: void
     """
     dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]]
@@ -53,7 +54,7 @@ def construct_grid(board, n):
     """
     Construct 2-D numpy array of provided shape
     :param (string) board: grid data
-    :param (int) n: grid shape
+    :param (int) n: grid size
     :return (ndarray): 2-D numpy grid
     """
     grid = np.empty([n, n], dtype=int)
@@ -69,6 +70,7 @@ def construct_grid(board, n):
 def get_goal_state(n):
     """
     Get serialized version of the goal grid
+    Example: (n = 3) => '000000000'
     :param (int) n: shape of the 2-D grid, filled with zeros
     :return (string): serialized version of the goal grid
     """
@@ -79,7 +81,7 @@ def get_goal_state(n):
 def get_solution_move(row, col, configuration):
     """
     Prepend configuration with a required token format
-    Example: row = 0, col = 0, config = '1 1 0 0' converted 'A1  1 1 0 0'
+    Example: row = 0, col = 0, config = '1 1 0 0' => 'A1  1 1 0 0'
     :param (int) row: row number. Index wise
     :param (int) col: column number. Index wise
     :param (string) configuration: serialized version of the grid
@@ -100,6 +102,80 @@ def get_search_move(search_algorithm, configuration):
     fn, gn, hn = get_heuristic(search_algorithm)
     config = configuration.replace(' ', '')
     return '{} {} {} {}'.format(fn, gn, hn, config)
+
+
+def evaluate_children(open_list, grid, solution_path, seen_states, level):
+    """
+    Evaluate each child and properly insert them in the open list.
+    :param (stack) open_list: stack of yet to be processed grids
+    :param (ndarray) grid: Parent 2-D array
+    :param (list) solution_path: Path to the parent grid
+    :param (set) seen_states: configurations seen so far
+    :param (int) level: Level of the parent grid
+    :return:
+    """
+    children_config = []
+    config_to_grid = {}
+    n = len(grid)
+    for row in range(n):
+        for col in range(n):
+            grid_copy = np.copy(grid)
+            flip(grid_copy, row, col)
+            grid_copy_config = get_configuration(grid_copy)
+            if grid_copy_config not in seen_states:
+                seen_states.add(grid_copy_config)
+                solution_move_child = get_solution_move(row, col, grid_copy_config)
+                copy_solution_path = copy.deepcopy(solution_path)
+                copy_solution_path.append(solution_move_child)
+                config_to_grid[grid_copy_config] = \
+                    grid_copy, level + 1, copy_solution_path
+                children_config.append(grid_copy_config)
+
+    sorted_children = sort_children(children_config)
+    open_list.extend([config_to_grid[child_config] for child_config in sorted_children])
+
+
+def sort_children(children):
+    """
+    Sort children in descending order of their White Tokens.
+    Meaning that the next best choice is at the very end of the returning list.
+    Sorting takes into account Scenario 2, provided in a handout.
+    Example:
+        Input:'1010011', '1010101', '1010110', '1110011', '1111111'
+        Output: '1111111', '1110011', '1010110', '1010101', '1010011'
+    :param (list) children: Unsorted configuration grids
+    :return (list): sorted list of configuration grids in descending order
+    """
+    sorted_children = []
+
+    while len(children) > 0:
+        n = len(children)
+        furthest_token_idx = 0
+        for j in range(1, n):
+            furthest_token, j_token = get_white_tokens(children[furthest_token_idx], children[j])
+            if j_token > -1 and furthest_token > -1:
+                furthest_token_idx = j if j_token > furthest_token else furthest_token_idx
+            else:
+                furthest_token_idx = j if j_token == -1 else furthest_token_idx
+        sorted_children.append(children[furthest_token_idx])
+        children.pop(furthest_token_idx)
+    return sorted_children
+
+
+def get_white_tokens(child_1, child_2):
+    """
+    Get positions of the first White Tokens for 2 children.
+    Cases of the White Tokens being located at the same spots are handled.
+    :param (string) child_1: configuration grid
+    :param (string) child_2: configuration grid
+    :return (int, int) : positions of White Tokens for child_1 and child_2 respectively
+    """
+    start = 0
+    while child_1.find(constant.WHITE_TOKEN, start) == child_2.find(constant.WHITE_TOKEN, start) != -1:
+        start = child_2.find(constant.WHITE_TOKEN, start) + 1
+    child_1_token = child_1.find(constant.WHITE_TOKEN, start)
+    child_2_token = child_2.find(constant.WHITE_TOKEN, start)
+    return child_1_token, child_2_token
 
 
 def write_results(solution_path, search_path, puzzle_number):
