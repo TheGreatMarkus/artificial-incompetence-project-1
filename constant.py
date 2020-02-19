@@ -3,7 +3,7 @@
 #
 # Define constants available throughout a project
 #
-# Copyright (c) 2020-2021 Team Artificial Incompetence, Comp 472
+# Copyright (c) 2020-2021 Team Artificial Incompetence, COMP 472
 # All rights reserved.
 # -----------------------------------------------------------
 NO_SOLUTION = 'no solution'

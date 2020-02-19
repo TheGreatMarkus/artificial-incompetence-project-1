@@ -1,9 +1,9 @@
 # -----------------------------------------------------------
 # dfs.py 22/01/20
 #
-# Define set of uninformed search algorithms
+# Define and run depth-first search algorithm
 #
-# Copyright (c) 2020-2021 Team Artificial Incompetence, Comp 472
+# Copyright (c) 2020-2021 Team Artificial Incompetence, COMP 472
 # All rights reserved.
 # -----------------------------------------------------------
 from utils import *
@@ -14,7 +14,7 @@ from utils import get_puzzle_info
 
 def main(file_path):
     """
-    Read file, retrieve puzzle info, and execute search for each puzzle
+    Read file, retrieve puzzle info, and execute dfs for each puzzle
     :param (string) file_path: relative path to the input file
     :return: void
     """
