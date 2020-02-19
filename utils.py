@@ -1,5 +1,5 @@
 # -----------------------------------------------------------
-# uninformed_search.py 22/01/20
+# utils.py 22/01/20
 #
 # Define set of utility functions available throughout a project
 #
@@ -45,12 +45,18 @@ def get_configuration(grid):
 
 def get_puzzle_info(puzzle):
     """
-    Extract n, max_d, max_l and board values from the file line
+    Return max_d, max_l, ndarray grid and goal configuration from the puzzle string
     :param (string) puzzle: file line that describes puzzle
-    :return (int, int, int, string): n, max_d, max_l, board values
+    :return (int, int, ndarray, string): max_d, max_l, grid, goal
     """
     puzzle = puzzle.split(' ')
-    return int(puzzle[0]), int(puzzle[1]), int(puzzle[2]), puzzle[3]
+    n = int(puzzle[0])
+    max_d = int(puzzle[1])
+    max_l = int(puzzle[2])
+    board = puzzle[3]
+    grid = construct_grid(board, n)
+    goal = get_goal_state(n)
+    return max_d, max_l, grid, goal
 
 
 def construct_grid(board, n):

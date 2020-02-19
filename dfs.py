@@ -1,5 +1,5 @@
 # -----------------------------------------------------------
-# uninformed_search.py 22/01/20
+# dfs.py 22/01/20
 #
 # Define set of uninformed search algorithms
 #
@@ -8,6 +8,20 @@
 # -----------------------------------------------------------
 from utils import *
 import constant
+
+from utils import get_puzzle_info
+
+
+def main(file_path):
+    """
+    Read file, retrieve puzzle info, and execute search for each puzzle
+    :param (string) file_path: relative path to the input file
+    :return: void
+    """
+    with open(file_path) as fp:
+        for puzzle_number, puzzle in enumerate(fp):
+            max_d, max_l, grid, goal = get_puzzle_info(puzzle)
+            execute_dfs(grid, max_d, goal, puzzle_number)
 
 
 def execute_dfs(grid, max_d, goal, puzzle_number):
@@ -60,3 +74,7 @@ def dfs(open_list, open_set, closed_dict, search_path, goal, max_d):
         if level < max_d:
             evaluate_children(open_list, grid, solution_path, open_set, closed_dict, level)
     return constant.NO_SOLUTION
+
+
+# Define input file here
+main('input.txt')
