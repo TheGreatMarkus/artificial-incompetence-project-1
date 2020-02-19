@@ -18,6 +18,7 @@ def main(file_path):
     with open(file_path) as puzzle_file:
         for puzzle_number, puzzle in enumerate(puzzle_file):
             max_d, max_l, grid, goal = get_puzzle_info(puzzle)
+            execute_a_star(grid, goal, max_l, puzzle_number)
 
 
 def execute_a_star(grid, goal, max_l, puzzle_number):
@@ -31,3 +32,6 @@ def execute_a_star(grid, goal, max_l, puzzle_number):
     """
     print("Executing A* Algorithm with max search length of {} on grid\n{}".format(max_l, grid))
     print("TODO")
+
+
+main('input.txt')
