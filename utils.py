@@ -107,13 +107,14 @@ def get_search_move(search_algorithm, configuration):
     return '{} {} {} {}'.format(fn, gn, hn, config)
 
 
-def evaluate_children(open_list, grid, solution_path, seen_states, level):
+def evaluate_children(open_list, grid, solution_path, open_set, closed_dict, level):
     """
     Evaluate each child and properly insert them in the open list.
     :param (stack) open_list: stack of yet to be processed grids
     :param (ndarray) grid: Parent 2-D array
     :param (list) solution_path: Path to the parent grid
-    :param (dictionary) seen_states: grid config and its corresponding depth
+    :param (set) open_set: keep track of the configurations in the open_list
+    :param (dictionary) closed_dict: visited grid configurations and their depth
     :param (int) level: Level of the parent grid
     :return:
     """
@@ -125,8 +126,9 @@ def evaluate_children(open_list, grid, solution_path, seen_states, level):
             grid_copy = np.copy(grid)
             flip(grid_copy, row, col)
             grid_copy_config = get_configuration(grid_copy)
-            if grid_copy_config not in seen_states or seen_states[grid_copy_config] > level + 1:
-                seen_states[grid_copy_config] = level + 1
+            if grid_copy_config not in open_set\
+                    and (grid_copy_config not in closed_dict or closed_dict[grid_copy_config] > level + 1):
+                open_set.add(grid_copy_config)
                 solution_move_child = get_solution_move(row, col, grid_copy_config)
                 copy_solution_path = copy.deepcopy(solution_path)
                 copy_solution_path.append(solution_move_child)
