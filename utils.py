@@ -18,17 +18,20 @@ def flip(grid, r, c):
     :param (ndarray) grid: numpy 2-D array
     :param (int) r: row index
     :param (int) c: column index
-    :return: void
+    :return: difference in number of black pegs after flip
     """
     dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]]
     n = len(grid)
+    count_flipped = 0
     grid[r][c] = 1 - grid[r][c]
+    count_flipped += 1 if grid[r][c] == 0 else -1
     for i in range(4):
         nxt_row = r + dirs[i][0]
         nxt_col = c + dirs[i][1]
         if 0 <= nxt_row < n and 0 <= nxt_col < n:
             grid[nxt_row][nxt_col] = 1 - grid[nxt_row][nxt_col]
-
+            count_flipped += 1 if grid[nxt_row][nxt_col] == 0 else -1
+    return count_flipped
 
 def get_configuration(grid):
     """
