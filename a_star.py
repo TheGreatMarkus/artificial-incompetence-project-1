@@ -7,7 +7,7 @@
 # All rights reserved.
 # -----------------------------------------------------------
 import sys
-from heapq import heappush, heappop
+from heapq import heappush, heappop, heapify
 from typing import List, Tuple, Set
 
 from numpy.core.multiarray import ndarray
@@ -26,13 +26,12 @@ def main(file_path):
     :param (string) file_path: relative path the input file
     :return: void
     """
-    heuristic = constant.ZERO_HEURISTIC
-    if len(sys.argv) > 1:
-        heuristic = sys.argv[1]
-        heuristics = [ZERO_HEURISTIC, COUNT_HEURISTIC, DIV_BY_5_HEURISTIC, NO_DOUBLE_PRESS_HEURISTIC]
-        if heuristic not in heuristics:
-            print('Invalid heuristic. Accepted heuristics are: {}'.format(heuristics))
-            sys.exit()
+    heuristics = [ZERO_HEURISTIC, COUNT_HEURISTIC, DIV_BY_5_HEURISTIC, NO_DOUBLE_PRESS_HEURISTIC]
+    if len(sys.argv) < 2 or sys.argv[1] not in heuristics:
+        print('Invalid heuristic. Accepted heuristics are: {}'.format(heuristics))
+        sys.exit()
+
+    heuristic = sys.argv[1]
 
     with open(file_path) as puzzle_file:
         for puzzle_number, puzzle in enumerate(puzzle_file):
@@ -54,9 +53,10 @@ def execute_a_star(grid: ndarray,
     :param heuristic_algorithm: Heuristic algorithm to be used for this run
     :return: void
     """
-    print("Executing A* Algorithm with max search length of {} on grid\n{}".format(max_l, grid))
+    print("Executing A* Algorithm with heuristic {} and max search length of {} on the grid\n{}".format(
+        heuristic_algorithm, max_l, grid))
     # Initialize necessary data structures
-    open_list: List[Tuple[int, int, Node]] = []
+    open_list: List[Tuple[float, int, Node]] = []
     open_set = set()
     closed_set = set()
     search_path: List[str] = []
@@ -76,7 +76,7 @@ def execute_a_star(grid: ndarray,
           else 'Found solution in {} moves'.format(len(solution_path) - 1))
 
 
-def a_star(open_list: List[Tuple[int, int, Node]],
+def a_star(open_list: List[Tuple[float, int, Node]],
            open_set: Set[str],
            closed_set: Set[str],
            search_path: List[str],
@@ -106,9 +106,10 @@ def a_star(open_list: List[Tuple[int, int, Node]],
         search_path.append(get_search_move(A_STAR_ALGORITHM, node))
 
         if node.s_grid == goal_s_grid:
+            print('Search path length: {}'.format(len(search_path)))
+            print('Open list size: {}'.format(len(open_list)))
             return node.path_from_root
         if len(search_path) < max_l:
-            print('Search path length: {}'.format(len(search_path)))
             evaluate_a_star_children(open_list, open_set, closed_set, node, heuristic)
     return NO_SOLUTION
 

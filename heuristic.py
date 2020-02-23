@@ -15,7 +15,7 @@ import constant
 from constant import Node
 
 
-def get_heuristic(heuristic_algorithm: str, grid: numpy.ndarray, path: List[str]):
+def get_heuristic(heuristic_algorithm: str, grid: numpy.ndarray, path: List[str]) -> float:
     """
     Get h(n) for a given Node, given the heuristic algorithm
     :param heuristic_algorithm: Algorithm used to calculate heuristic
@@ -24,7 +24,7 @@ def get_heuristic(heuristic_algorithm: str, grid: numpy.ndarray, path: List[str]
     :return: h(n)
     """
     if heuristic_algorithm == constant.ZERO_HEURISTIC:
-        return 0
+        return 0.0
     elif heuristic_algorithm == constant.COUNT_HEURISTIC:
         return get_total_count_heuristic(grid)
     elif heuristic_algorithm == constant.DIV_BY_5_HEURISTIC:
@@ -35,7 +35,7 @@ def get_heuristic(heuristic_algorithm: str, grid: numpy.ndarray, path: List[str]
     return 0
 
 
-def get_total_count_heuristic(grid: ndarray):
+def get_total_count_heuristic(grid: ndarray) -> float:
     """
     Count total number of black pegs on the board.
     :param (ndarray) grid: 2D numpy array
@@ -47,7 +47,7 @@ def get_total_count_heuristic(grid: ndarray):
     return count
 
 
-def get_div_by_5_heuristic(grid: ndarray):
+def get_div_by_5_heuristic(grid: ndarray) -> float:
     """
     Count total number of black pegs on the board and divide by 5.
     :param (ndarray) grid: 2D numpy array
@@ -57,5 +57,5 @@ def get_div_by_5_heuristic(grid: ndarray):
 
 
 # TODO
-def get_no_double_press_heuristic(grid: ndarray, path: List[str]):
-    pass
+def get_no_double_press_heuristic(grid: ndarray, path: List[str]) -> float:
+    return 0.0

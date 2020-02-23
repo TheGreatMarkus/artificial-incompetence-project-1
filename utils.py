@@ -7,7 +7,8 @@
 # All rights reserved.
 # -----------------------------------------------------------
 import copy
-from heapq import heappush
+import os
+from heapq import heappush, heapify
 from typing import List, Set, Tuple, Dict
 
 import numpy as np
@@ -152,7 +153,7 @@ def evaluate_dfs_children(open_list: List[Node],
     open_list.extend([children_nodes[child_config] for child_config in children_s_grids])
 
 
-def evaluate_a_star_children(open_list: List[Tuple[int, int, Node]],
+def evaluate_a_star_children(open_list: List[Tuple[float, int, Node]],
                              open_set: Set[str],
                              closed_set: set,
                              node: Node,
@@ -173,14 +174,13 @@ def evaluate_a_star_children(open_list: List[Tuple[int, int, Node]],
         if child_s_grid not in open_set.union(closed_set):
             child_path = copy.deepcopy(node.path_from_root)
             child_path.append(get_solution_move(row, col, child_s_grid))
-            child_hn = get_heuristic(heuristic_algorithm, child_grid, child_path)
+            child_hn: float = get_heuristic(heuristic_algorithm, child_grid, child_path)
             child_depth = node.depth + 1
             child_node = Node(child_grid, child_s_grid, child_depth, child_hn, child_path)
 
             # Add child to open set and priority queue
             heappush(open_list, (child_node.get_fn(), get_white_token_score(child_s_grid), child_node))
             open_set.add(child_s_grid)
-    print('Length of open list {}'.format(len(open_list)))
 
 
 def get_white_token_score(s_grid: str) -> int:
@@ -202,13 +202,15 @@ def write_results(solution_path, search_path, puzzle_number, algorithm: str):
     :param algorithm: Algorithm used for the current run
     :return: void
     """
-    with open('{}_{}_{}'.format(puzzle_number, algorithm, SOLUTION_FILE), 'w') as fp:
+    filename = 'output/{}_{}_{}'.format(puzzle_number, algorithm, SOLUTION_FILE)
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    with open(filename, 'w') as fp:
         if type(solution_path) is str:
             fp.write(solution_path)
         else:
             for path in solution_path:
                 fp.write('{}\n'.format(path))
-
-    with open('{}_{}_{}'.format(puzzle_number, algorithm, SEARCH_FILE), 'w') as fp:
+    filename = 'output/{}_{}_{}'.format(puzzle_number, algorithm, SEARCH_FILE)
+    with open(filename, 'w') as fp:
         for path in search_path:
             fp.write('{}\n'.format(path))

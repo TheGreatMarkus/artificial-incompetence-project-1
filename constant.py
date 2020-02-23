@@ -33,10 +33,10 @@ class Node:
     grid: ndarray = None
     s_grid: str = ''
     depth: int = 0
-    hn: int = 0
+    hn: float = 0.0
     path_from_root: list = []
 
-    def __init__(self, grid: ndarray, s_grid: str, depth: int, hn: int, path_from_root: List[str]):
+    def __init__(self, grid: ndarray, s_grid: str, depth: int, hn: float, path_from_root: List[str]):
         """
         Create Node object
         :param grid: 2D numpy array representation of the state
