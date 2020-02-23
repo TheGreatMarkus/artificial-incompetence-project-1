@@ -16,8 +16,8 @@ SEARCH_FILE = 'search.txt'
 SOLUTION_FILE = 'solution.txt'
 
 DFS_ALGORITHM = 'dfs'
-A_STAR_ALGORITHM = 'a_star'
-BEST_FIRST_ALGORITHM = 'best_first'
+A_STAR_ALGORITHM = 'astar'
+BEST_FIRST_ALGORITHM = 'bfs'
 
 ZERO_HEURISTIC = 'zero_h'
 COUNT_HEURISTIC = 'count_h'

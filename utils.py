@@ -171,7 +171,7 @@ def evaluate_a_star_children(open_list: List[Tuple[float, int, Node]],
         child_grid = np.copy(node.grid)
         flip_token(child_grid, row, col)
         child_s_grid: str = grid_to_string(child_grid)
-        if child_s_grid not in open_set.union(closed_set):
+        if child_s_grid not in open_set and child_s_grid not in closed_set:
             child_path = copy.deepcopy(node.path_from_root)
             child_path.append(get_solution_move(row, col, child_s_grid))
             child_hn: float = get_heuristic(heuristic_algorithm, child_grid, child_path)

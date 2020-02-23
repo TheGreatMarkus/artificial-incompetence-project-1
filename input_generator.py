@@ -1,4 +1,3 @@
-import itertools
 from random import randrange
 
 import numpy
