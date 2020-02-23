@@ -8,7 +8,7 @@
 # -----------------------------------------------------------
 import sys
 from heapq import heappush, heappop
-from typing import List, Tuple
+from typing import List, Tuple, Set
 
 from numpy.core.multiarray import ndarray
 
@@ -72,25 +72,29 @@ def execute_a_star(grid: ndarray, goal: str, max_l: int, puzzle_number: int, heu
           else 'Found solution in {} moves'.format(len(solution_path) - 1))
 
 
-def a_star(open_list: List[Tuple[int, int, Node]], open_set, closed_set: set, search_path, goal, max_l,
-           heuristic_algorithm) -> List[str]:
+def a_star(open_list: List[Tuple[int, int, Node]],
+           open_set: Set[str],
+           closed_set: Set[str],
+           search_path: List[str],
+           goal_s_grid,
+           max_l,
+           heuristic) -> List[str]:
     while len(open_list) > 0:
-        node_tuple: Tuple[int, int, Node] = heappop(open_list)
+
+        # Pop node from priority queue
+        node_tuple = heappop(open_list)
         node = node_tuple[2]
 
-        hn = node.get_hn()
-        grid = node.grid
-        depth = node.depth
-        solution_path = node.path_from_root
-        s_grid = node.s_grid
+        # Update data structures
+        open_set.remove(node.s_grid)
+        closed_set.add(node.s_grid)
+        search_path.append(get_search_move(A_STAR_ALGORITHM, node))
 
-        open_set.remove(s_grid)
-        closed_set.add(s_grid)
-        search_path.append(get_search_move(A_STAR_ALGORITHM, s_grid, node))
-        if s_grid == goal:
-            return solution_path
+        if node.s_grid == goal_s_grid:
+            return node.path_from_root
         if len(search_path) < max_l:
-            evaluate_a_star_children(open_list, open_set, closed_set, node, heuristic_algorithm)
+            print('Search path length: {}'.format(len(search_path)))
+            evaluate_a_star_children(open_list, open_set, closed_set, node, heuristic)
     return NO_SOLUTION
 
 
