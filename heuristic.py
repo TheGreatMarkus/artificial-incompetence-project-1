@@ -3,70 +3,66 @@
 #
 # Define heuristic functionality available throughout a project
 #
-# Copyright (c) 2020-2021 Team Artificial Incompetence, Comp 472
+# Copyright (c) 2020-2021 Team Artificial Incompetence, COMP 472
 # All rights reserved.
 # -----------------------------------------------------------
+from typing import List
+
+import numpy
+from numpy.core.multiarray import ndarray
+
 import constant
 
 
-def get_heuristic(search_algorithm):
+def get_heuristic(heuristic_algorithm: str,
+                  parent_black_tokens: int,
+                  black_token_diff: int,
+                  grid: numpy.ndarray,
+                  path: List[str]) -> float:
     """
-    Get f(n), g(n) and h(n) node values for a particular algorithm
-    :param (string) search_algorithm: type of the search algorithm
-    :return: f(n), g(n) and h(n) values
+    Get h(n) for a given Node, given the heuristic algorithm
+    :param parent_black_tokens: Number of black token of the parent node
+    :param black_token_diff: Difference on black tokens after move
+    :param heuristic_algorithm: Algorithm used to calculate heuristic
+    :param grid: 2D numpy array representation of the state
+    :param path: Path from root to the given state
+    :return: h(n)
     """
-    fn = get_f_of_n(search_algorithm)
-    gn = get_g_of_n(search_algorithm)
-    hn = get_h_of_n(search_algorithm)
-    return fn, gn, hn
+    if heuristic_algorithm == constant.ZERO_HEURISTIC:
+        return 0.0
+    elif heuristic_algorithm == constant.COUNT_HEURISTIC:
+        return get_total_count_heuristic(parent_black_tokens, black_token_diff)
+    elif heuristic_algorithm == constant.DIV_BY_5_HEURISTIC:
+        return get_div_by_5_heuristic(parent_black_tokens, black_token_diff)
+    elif heuristic_algorithm == constant.NO_DOUBLE_PRESS_HEURISTIC:
+        return get_no_double_press_heuristic(parent_black_tokens, black_token_diff, grid, path)
+
+    return 0
 
 
-def get_f_of_n(search_algorithm):
+def get_total_count_heuristic(parent_black_tokens: int, black_token_diff: int) -> float:
     """
-    Get f(n) node value for a particular algorithm
-    :param (string) search_algorithm: type of the search algorithm
-    :return: f(n) value
+    Counts the total number of black pegs on the board using differential calculation
+    :param parent_black_tokens: Number of black token of the parent node
+    :param black_token_diff: Difference on black tokens after move
+    :return: heuristic value of the grid
     """
-    if search_algorithm == constant.DFS:
-        return 0
+    return parent_black_tokens + black_token_diff
 
 
-def get_g_of_n(search_algorithm):
+def get_div_by_5_heuristic(parent_black_tokens: int, black_token_diff: int) -> float:
     """
-        Get g(n) node value for a particular algorithm
-        :param (string) search_algorithm: type of the search algorithm
-        :return: g(n) value
+    Counts the total number of black pegs on the board and then divides it by 5
+    :param parent_black_tokens: Number of black token of the parent node
+    :param black_token_diff: Difference on black tokens after move
+    :return: heuristic value of the grid
     """
-    if search_algorithm == constant.DFS:
-        return 0
+    return get_total_count_heuristic(parent_black_tokens, black_token_diff) / 5
 
 
-def get_h_of_n(search_algorithm):
-    """
-        Get h(n) node value for a particular algorithm
-        :param (string) search_algorithm: type of the search algorithm
-        :return: h(n) value
-    """
-    if search_algorithm == constant.DFS:
-        return 0
-
-
-def get_total_count_heuristic(parent_count, flipped):
-    """
-    Count total number of black pegs on the board.
-    It's calculated as a difference of parentBlackPegs - flippedBlackPegs
-    :param parent_count: sum of the black pegs on the parent board
-    :param flipped: number of flipped black pegs to get current board
-    :return: the value of heuristics
-    """
-    return parent_count - flipped
-
-
-def get_div_by_five_heuristic(parent_count, flipped):
-    """
-    Count total number of black pegs on the board and divide by 5.
-    :param parent_count: sum of the black pegs on the parent board
-    :param flipped: number of flipped black pegs to get current board
-    :return: the value of heuristics
-    """
-    return (parent_count - flipped) / 5
+# TODO
+def get_no_double_press_heuristic(parent_black_tokens: int,
+                                  black_token_diff: int,
+                                  grid: ndarray,
+                                  path: List[str]) -> float:
+    return 0.0
