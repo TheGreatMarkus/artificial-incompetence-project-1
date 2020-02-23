@@ -6,10 +6,11 @@
 # Copyright (c) 2020-2021 Team Artificial Incompetence, COMP 472
 # All rights reserved.
 # -----------------------------------------------------------
+from typing import List
+
 from numpy.core.records import ndarray
 
 NO_SOLUTION = 'no solution'
-WHITE_TOKEN = '0'
 
 SEARCH_FILE = 'search.txt'
 SOLUTION_FILE = 'solution.txt'
@@ -25,13 +26,25 @@ NO_DOUBLE_PRESS_HEURISTIC = 'no_dbl_press_h'
 
 
 class Node:
+    """
+    Node containing the 2D numpy array and string representations of a grid state,
+    its depth, h(n) and path from the root node
+    """
     grid: ndarray = None
     s_grid: str = ''
     depth: int = 0
     hn: int = 0
     path_from_root: list = []
 
-    def __init__(self, grid: ndarray, s_grid: str, depth: int, hn: int, path_from_root: list):
+    def __init__(self, grid: ndarray, s_grid: str, depth: int, hn: int, path_from_root: List[str]):
+        """
+        Create Node object
+        :param grid: 2D numpy array representation of the state
+        :param s_grid: String representation of the state
+        :param depth: Depth of the state
+        :param hn: h(n) of the state
+        :param path_from_root: Path from the root to the state
+        """
         self.grid = grid
         self.s_grid = s_grid
         self.depth = depth

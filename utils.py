@@ -8,52 +8,53 @@
 # -----------------------------------------------------------
 import copy
 from heapq import heappush
-from typing import List, Set, Tuple
+from typing import List, Set, Tuple, Dict
 
 import numpy as np
 
-from constant import A_STAR_ALGORITHM, BEST_FIRST_ALGORITHM, SOLUTION_FILE, SEARCH_FILE, WHITE_TOKEN, Node
+from constant import A_STAR_ALGORITHM, BEST_FIRST_ALGORITHM, SOLUTION_FILE, SEARCH_FILE, Node
 from heuristic import get_heuristic
 
 
-def flip_token(grid: np.ndarray, r: int, c: int) -> int:
+def flip_token(grid: np.ndarray, r: int, c: int):
     """
     Flip current token and 4 adjacent cells. Up, Down, Left, Right
-    :param (ndarray) grid: numpy 2-D array
-    :param (int) r: row index
-    :param (int) c: column index
+    :param grid: numpy 2-D array
+    :param r: row index
+    :param c: column index
     :return: difference in number of black pegs after flip
     """
     dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]]
     n = len(grid)
-    count_flipped = 0
+    # TODO decide if count should be returned
+    # count_flipped = 0
     grid[r][c] = 1 - grid[r][c]
-    count_flipped += 1 if grid[r][c] == 0 else -1
+    # count_flipped += 1 if grid[r][c] == 0 else -1
     for i in range(4):
         nxt_row = r + dirs[i][0]
         nxt_col = c + dirs[i][1]
         if 0 <= nxt_row < n and 0 <= nxt_col < n:
             grid[nxt_row][nxt_col] = 1 - grid[nxt_row][nxt_col]
-            count_flipped += 1 if grid[nxt_row][nxt_col] == 0 else -1
-    return count_flipped
+            # count_flipped += 1 if grid[nxt_row][nxt_col] == 0 else -1
+    # return count_flipped
 
 
 def grid_to_string(grid: np.ndarray) -> str:
     """
-    Get serialized version of the grid.
+    Get string version of the 2D numpy array
     Example: [[1,1],[0,0]] => '1 1 0 0'
-    :param (ndarray) grid: numpy 2-D array
-    :return (string): serialized grid
+    :param grid: numpy 2-D array
+    :return: string representation of string
     """
     return ' '.join(map(str, [value for row in grid for value in row]))
 
 
 def string_to_grid(s_grid: str, n: int) -> np.ndarray:
     """
-    Construct 2-D numpy array of provided shape
-    :param (string) s_grid: grid data
-    :param (int) n: grid size
-    :return (ndarray): 2-D numpy grid
+    Construct 2-D numpy array from its string representation
+    :param s_grid: grid data
+    :param n: grid size
+    :return: 2-D numpy grid
     """
     grid = np.empty([n, n], dtype=int)
     row_num = int(len(s_grid) / n)
@@ -67,9 +68,9 @@ def string_to_grid(s_grid: str, n: int) -> np.ndarray:
 
 def get_puzzle_info(puzzle: str) -> Tuple[int, int, np.ndarray, str]:
     """
-    Return max_d, max_l, ndarray grid and goal configuration from the puzzle string
-    :param (string) puzzle: file line that describes puzzle
-    :return (int, int, ndarray, string): max_d, max_l, grid, goal
+    Return max_d, max_l, ndarray grid and goal string from the puzzle string
+    :param puzzle: file line that describes puzzle
+    :return: max_d, max_l, grid, goal
     """
     puzzle = puzzle.split(' ')
     n = int(puzzle[0])
@@ -85,33 +86,33 @@ def get_goal_state(n: int) -> str:
     """
     Get serialized version of the goal grid
     Example: (n = 3) => '000000000'
-    :param (int) n: shape of the 2-D grid, filled with zeros
-    :return (string): serialized version of the goal grid
+    :param n: shape of the 2-D grid, filled with zeros
+    :return: serialized version of the goal grid
     """
     goal_grid = np.zeros([n, n], dtype=int)
     return grid_to_string(goal_grid)
 
 
-def get_solution_move(row: int, col: int, s_grid: str):
+def get_solution_move(row: int, col: int, s_grid: str) -> str:
     """
     Generate move string to be added to the current node's path
     Example: row = 0, col = 0, config = '1 1 0 0' => 'A1  1 1 0 0'
-    :param (int) row: row number. Index wise
-    :param (int) col: column number. Index wise
-    :param (string) s_grid: serialized version of the grid
-    :return (string): solution move
+    :param row: row index
+    :param col: column index
+    :param s_grid: serialized version of the grid
+    :return: solution move
     """
     ascii_of_a = 65
     token = chr(ascii_of_a + row) + str(col + 1)
     return '{}  {}'.format(token, s_grid)
 
 
-def get_search_move(search_algorithm: str, node: Node):
+def get_search_move(search_algorithm: str, node: Node) -> str:
     """
     Prepend configuration with required heuristic data
-    :param (string) search_algorithm: type of search algorithm
-    :param node:
-    :return (string): search move
+    :param search_algorithm: type of search algorithm
+    :param node: Node object
+    :return: search move
     """
     hn = node.get_hn() if search_algorithm in [BEST_FIRST_ALGORITHM, A_STAR_ALGORITHM] else 0
     gn = node.get_gn() if search_algorithm == A_STAR_ALGORITHM else 0
@@ -120,14 +121,17 @@ def get_search_move(search_algorithm: str, node: Node):
     return '{} {} {} {}'.format(fn, gn, hn, config)
 
 
-def evaluate_dfs_children(open_list, open_set, closed_dict, node: Node):
+def evaluate_dfs_children(open_list: List[Node],
+                          open_set: Set[str],
+                          closed_dict: Dict[str, int],
+                          node: Node):
     """
     Evaluate each child and properly insert them in the open list.
-    :param node:
-    :param (stack) open_list: stack of yet to be processed grids
-    :param (set) open_set: keep track of the configurations in the open_list
-    :param (dictionary) closed_dict: visited grid configurations and their depth
-    :return:
+    :param open_list: stack containing all discovered nodes
+    :param open_set: Set containing all grid strings of all discovered nodes from open_list
+    :param closed_dict: Dictionary containing all visited grid strings
+    :param node: Node object
+    :return: void
     """
     children_s_grids = []
     children_nodes = {}
@@ -153,6 +157,15 @@ def evaluate_a_star_children(open_list: List[Tuple[int, int, Node]],
                              closed_set: set,
                              node: Node,
                              heuristic_algorithm: str):
+    """
+    Evaluate all of a node's children and add them to the open list
+    :param open_list: Priority Queue containing all discovered nodes
+    :param open_set: Set containing all grid strings of all discovered nodes from open_list
+    :param closed_set: Set containing all visited grid strings
+    :param node: Node object
+    :param heuristic_algorithm: Which heuristic to use
+    :return: void
+    """
     for row, col in np.ndindex(node.grid.shape):
         child_grid = np.copy(node.grid)
         flip_token(child_grid, row, col)
@@ -171,15 +184,22 @@ def evaluate_a_star_children(open_list: List[Tuple[int, int, Node]],
 
 
 def get_white_token_score(s_grid: str) -> int:
+    """
+    Returns the numerical value of a grid string, considering
+    it as the string representation of a binary number
+    :param s_grid: The string representation of a grid
+    :return: numerical value of string grid
+    """
     return int(s_grid.replace(' ', ''), 2)
 
 
 def write_results(solution_path, search_path, puzzle_number, algorithm: str):
     """
     Dump solution_path and search_path to files
-    :param (list | string) solution_path: path up to identified solution. List of paths or 'no solution'
-    :param (list) search_path: close list of searched nodes
-    :param (int) puzzle_number: line number of the puzzle prepended to the name of the file
+    :param solution_path: path up to identified solution. List of paths or 'no solution'
+    :param search_path: close list of searched nodes
+    :param puzzle_number: line number of the puzzle prepended to the name of the file
+    :param algorithm: Algorithm used for the current run
     :return: void
     """
     with open('{}_{}_{}'.format(puzzle_number, algorithm, SOLUTION_FILE), 'w') as fp:

@@ -22,8 +22,8 @@ from utils import get_puzzle_info, grid_to_string, write_results, get_search_mov
 
 def main(file_path):
     """
-    Read file, retrive puzzle info, and execute a* for each puzzle
-    :param (string) file_path: relative path the input fule
+    Read file, retrieve puzzle info, and execute a* for each puzzle
+    :param (string) file_path: relative path the input file
     :return: void
     """
     heuristic = constant.ZERO_HEURISTIC
@@ -40,14 +40,18 @@ def main(file_path):
             execute_a_star(grid, goal, max_l, puzzle_number, heuristic)
 
 
-def execute_a_star(grid: ndarray, goal: str, max_l: int, puzzle_number: int, heuristic_algorithm: str):
+def execute_a_star(grid: ndarray,
+                   goal: str,
+                   max_l: int,
+                   puzzle_number: int,
+                   heuristic_algorithm: str):
     """
-    Wrapper function for A*
-    :param heuristic_algorithm: Heuristic algorithm to be used
-    :param (ndarray) grid: numpy 2D array representation of the input board.
-    :param (string) goal: goal s_grid
-    :param (int) max_l: maximum search path length
-    :param (int) puzzle_number: line number of the puzzle
+    Wrapper function to run A*
+    :param grid: numpy 2D array representation of the input board.
+    :param goal: goal grid string
+    :param max_l: maximum search path length
+    :param puzzle_number: line number of the puzzle
+    :param heuristic_algorithm: Heuristic algorithm to be used for this run
     :return: void
     """
     print("Executing A* Algorithm with max search length of {} on grid\n{}".format(max_l, grid))
@@ -79,6 +83,17 @@ def a_star(open_list: List[Tuple[int, int, Node]],
            goal_s_grid,
            max_l,
            heuristic) -> List[str]:
+    """
+    Runs the A* search algorithm
+    :param open_list: Priority Queue containing all discovered nodes
+    :param open_set: Set containing all grid strings of all discovered nodes from open_list
+    :param closed_set: Set containing all visited grid strings
+    :param search_path: Search path string
+    :param goal_s_grid: Goal grid string
+    :param max_l: maximum search path length
+    :param heuristic: Heuristic algorithm to be used for this run
+    :return: Solution path if available, else returns a string indicating failure to find a solution
+    """
     while len(open_list) > 0:
 
         # Pop node from priority queue

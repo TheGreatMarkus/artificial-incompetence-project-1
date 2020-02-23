@@ -17,12 +17,11 @@ from constant import Node
 
 def get_heuristic(heuristic_algorithm: str, grid: numpy.ndarray, path: List[str]):
     """
-    Get f(n), g(n) and h(n) node values for a particular algorithm
-    :param path:
-    :param grid:
-    :param heuristic_algorithm: type of heuristic
-    :param (Node) node: type of the search algorithm
-    :return: f(n), g(n) and h(n) values
+    Get h(n) for a given Node, given the heuristic algorithm
+    :param heuristic_algorithm: Algorithm used to calculate heuristic
+    :param grid: 2D numpy array representation of the state
+    :param path: Path from root to the given state
+    :return: h(n)
     """
     if heuristic_algorithm == constant.ZERO_HEURISTIC:
         return 0
@@ -36,20 +35,9 @@ def get_heuristic(heuristic_algorithm: str, grid: numpy.ndarray, path: List[str]
     return 0
 
 
-def get_h_of_n(search_algorithm):
-    """
-        Get h(n) node value for a particular algorithm
-        :param (string) search_algorithm: type of the search algorithm
-        :return: h(n) value
-    """
-    if search_algorithm == constant.DFS:
-        return 0
-
-
 def get_total_count_heuristic(grid: ndarray):
     """
     Count total number of black pegs on the board.
-    It's calculated as a difference of parentBlackPegs - flippedBlackPegs
     :param (ndarray) grid: 2D numpy array
     :return: heuristic value of the grid
     """
