@@ -64,8 +64,9 @@ def execute_a_star(grid: ndarray,
     # initialize root node information
     s_grid = grid_to_string(grid)
     path = ['{}   {}'.format(0, s_grid)]
-    hn = get_heuristic(heuristic_algorithm, grid, path)
-    root_node = Node(grid, s_grid, 1, hn, path)
+    num_black_tokens = s_grid.count('1')
+    hn = get_heuristic(heuristic_algorithm, num_black_tokens, 0, grid, path)
+    root_node = Node(grid, s_grid, 1, hn, num_black_tokens, path)
 
     heappush(open_list, (root_node.get_fn(), get_white_token_score(s_grid), root_node))
     open_set.add(s_grid)

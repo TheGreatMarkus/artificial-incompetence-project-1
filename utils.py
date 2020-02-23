@@ -17,7 +17,7 @@ from constant import A_STAR_ALGORITHM, BEST_FIRST_ALGORITHM, SOLUTION_FILE, SEAR
 from heuristic import get_heuristic
 
 
-def flip_token(grid: np.ndarray, r: int, c: int):
+def flip_token(grid: np.ndarray, r: int, c: int) -> int:
     """
     Flip current token and 4 adjacent cells. Up, Down, Left, Right
     :param grid: numpy 2-D array
@@ -27,17 +27,16 @@ def flip_token(grid: np.ndarray, r: int, c: int):
     """
     dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]]
     n = len(grid)
-    # TODO decide if count should be returned
-    # count_flipped = 0
+    count_flipped = 0
     grid[r][c] = 1 - grid[r][c]
-    # count_flipped += 1 if grid[r][c] == 0 else -1
+    count_flipped += -1 if grid[r][c] == 0 else 1
     for i in range(4):
         nxt_row = r + dirs[i][0]
         nxt_col = c + dirs[i][1]
         if 0 <= nxt_row < n and 0 <= nxt_col < n:
             grid[nxt_row][nxt_col] = 1 - grid[nxt_row][nxt_col]
-            # count_flipped += 1 if grid[nxt_row][nxt_col] == 0 else -1
-    # return count_flipped
+            count_flipped += -1 if grid[nxt_row][nxt_col] == 0 else 1
+    return count_flipped
 
 
 def grid_to_string(grid: np.ndarray) -> str:
@@ -169,14 +168,16 @@ def evaluate_a_star_children(open_list: List[Tuple[float, int, Node]],
     """
     for row, col in np.ndindex(node.grid.shape):
         child_grid = np.copy(node.grid)
-        flip_token(child_grid, row, col)
+        diff_black_tokens = flip_token(child_grid, row, col)
         child_s_grid: str = grid_to_string(child_grid)
         if child_s_grid not in open_set and child_s_grid not in closed_set:
             child_path = copy.deepcopy(node.path_from_root)
             child_path.append(get_solution_move(row, col, child_s_grid))
-            child_hn: float = get_heuristic(heuristic_algorithm, child_grid, child_path)
+            child_hn: float = get_heuristic(heuristic_algorithm, node.black_tokens, diff_black_tokens, child_grid,
+                                            child_path)
             child_depth = node.depth + 1
-            child_node = Node(child_grid, child_s_grid, child_depth, child_hn, child_path)
+            child_node = Node(child_grid, child_s_grid, child_depth, child_hn, node.black_tokens + diff_black_tokens,
+                              child_path)
 
             # Add child to open set and priority queue
             heappush(open_list, (child_node.get_fn(), get_white_token_score(child_s_grid), child_node))
