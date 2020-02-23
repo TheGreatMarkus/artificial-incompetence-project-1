@@ -6,10 +6,9 @@
 # Copyright (c) 2020-2021 Team Artificial Incompetence, COMP 472
 # All rights reserved.
 # -----------------------------------------------------------
+import constant
 from constant import DFS_ALGORITHM
 from utils import *
-import constant
-
 from utils import get_puzzle_info
 
 

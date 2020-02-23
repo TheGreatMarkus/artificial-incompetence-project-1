@@ -8,7 +8,7 @@
 # -----------------------------------------------------------
 import copy
 import os
-from heapq import heappush, heapify
+from heapq import heappush
 from typing import List, Set, Tuple, Dict
 
 import numpy as np

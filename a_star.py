@@ -7,7 +7,7 @@
 # All rights reserved.
 # -----------------------------------------------------------
 import sys
-from heapq import heappush, heappop, heapify
+from heapq import heappush, heappop
 from typing import List, Tuple, Set
 
 from numpy.core.multiarray import ndarray
@@ -16,8 +16,8 @@ import constant
 from constant import NO_SOLUTION, ZERO_HEURISTIC, COUNT_HEURISTIC, DIV_BY_5_HEURISTIC, \
     NO_DOUBLE_PRESS_HEURISTIC, Node, A_STAR_ALGORITHM
 from heuristic import get_heuristic
-from utils import get_puzzle_info, grid_to_string, write_results, get_search_move, evaluate_dfs_children, \
-    evaluate_a_star_children, get_white_token_score
+from utils import get_puzzle_info, grid_to_string, write_results, get_search_move, evaluate_a_star_children, \
+    get_white_token_score
 
 
 def main(file_path):
