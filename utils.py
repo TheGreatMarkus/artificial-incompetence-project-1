@@ -206,8 +206,8 @@ def evaluate_bfs_children(open_list: List[Tuple[float, int, Node]],
             child_path.append(get_solution_move(row, col, child_s_grid))
             child_hn: float = get_heuristic(heuristic_algorithm, node.black_tokens, diff_black_tokens, child_grid,
                                             child_path)
-            child_depth = node.depth + 1
-            child_node = Node(child_grid, child_s_grid, child_depth, child_hn, node.black_tokens + diff_black_tokens,
+            
+            child_node = Node(child_grid, child_s_grid, node.depth, child_hn, node.black_tokens + diff_black_tokens,
                               child_path)
 
             # Add child to open set and priority queue
