@@ -145,7 +145,8 @@ def evaluate_dfs_children(open_list: List[Node],
             child_solution_move = get_solution_move(row, col, child_s_grid)
             child_path_from_root = copy.deepcopy(node.path_from_root)
             child_path_from_root.append(child_solution_move)
-            children_nodes[child_s_grid] = Node(child_grid, child_s_grid, node.depth + 1, 0, child_path_from_root)
+            children_nodes[child_s_grid] = Node(child_grid, child_s_grid, node.depth + 1, 0,
+                                                node.black_tokens, child_path_from_root)
             children_s_grids.append(child_s_grid)
 
     children_s_grids.sort(key=lambda s_grid: get_white_token_score(s_grid), reverse=True)
