@@ -15,9 +15,9 @@ from numpy.core.multiarray import ndarray
 
 import constant
 from constant import NO_SOLUTION, ZERO_HEURISTIC, COUNT_HEURISTIC, DIV_BY_5_HEURISTIC, \
-    NO_DOUBLE_PRESS_HEURISTIC, Node, A_STAR_ALGORITHM, BEST_FIRST_ALGORITHM
+    NO_DOUBLE_PRESS_HEURISTIC, Node, BEST_FIRST_ALGORITHM
 from heuristic import get_heuristic
-from utils import get_puzzle_info, grid_to_string, write_results, get_search_move, evaluate_a_star_children, \
+from utils import get_puzzle_info, grid_to_string, write_results, get_search_move, evaluate_bfs_children, \
     get_white_token_score
     
     
@@ -118,7 +118,7 @@ def bfs(open_list: List[Tuple[float, int, Node]],
             print('Open list size: {}'.format(len(open_list)))
             return node.path_from_root
         if len(search_path) < max_l:
-            evaluate_a_star_children(open_list, open_set, closed_set, node, heuristic)
+            evaluate_bfs_children(open_list, open_set, closed_set, node, heuristic)
     return NO_SOLUTION
 
 main('input.txt')

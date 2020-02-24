@@ -183,6 +183,37 @@ def evaluate_a_star_children(open_list: List[Tuple[float, int, Node]],
             heappush(open_list, (child_node.get_fn(), get_white_token_score(child_s_grid), child_node))
             open_set.add(child_s_grid)
 
+def evaluate_bfs_children(open_list: List[Tuple[float, int, Node]],
+                             open_set: Set[str],
+                             closed_set: set,
+                             node: Node,
+                             heuristic_algorithm: str):
+    """
+    Evaluate all of a node's children and add them to the open list
+    :param open_list: Priority Queue containing all discovered nodes
+    :param open_set: Set containing all grid strings of all discovered nodes from open_list
+    :param closed_set: Set containing all visited grid strings
+    :param node: Node object
+    :param heuristic_algorithm: Which heuristic to use
+    :return: void
+    """
+    for row, col in np.ndindex(node.grid.shape):
+        child_grid = np.copy(node.grid)
+        diff_black_tokens = flip_token(child_grid, row, col)
+        child_s_grid: str = grid_to_string(child_grid)
+        if child_s_grid not in open_set and child_s_grid not in closed_set:
+            child_path = copy.deepcopy(node.path_from_root)
+            child_path.append(get_solution_move(row, col, child_s_grid))
+            child_hn: float = get_heuristic(heuristic_algorithm, node.black_tokens, diff_black_tokens, child_grid,
+                                            child_path)
+            child_depth = node.depth + 1
+            child_node = Node(child_grid, child_s_grid, child_depth, child_hn, node.black_tokens + diff_black_tokens,
+                              child_path)
+
+            # Add child to open set and priority queue
+            heappush(open_list, (child_node.get_hn(), get_white_token_score(child_s_grid), child_node))
+            open_set.add(child_s_grid)
+
 
 def get_white_token_score(s_grid: str) -> int:
     """
