@@ -9,7 +9,7 @@
 import copy
 import os
 from heapq import heappush
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Union
 
 import numpy as np
 
@@ -254,12 +254,13 @@ def write_results(solution_path, search_path, puzzle_number, algorithm: str):
             fp.write('{}\n'.format(path))
 
 
-def gather_performance(puzzle_number: int, grid_size: int, solution_path_len: int, search_path_len: int,
+def gather_performance(puzzle_number: int, grid_size: int, solution_path: Union[str, list], search_path_len: int,
                        start_time: float, end_time: float, algorithm: str, heuristic: str):
     filename = PERFORMANCE_DIR_TEMPLATE.format(algorithm, heuristic)
     with open(filename, 'a') as fp:
         fp.write(PERFORMANCE_FILE_LINE.format(puzzle_number, grid_size,
-                                              solution_path_len, search_path_len, end_time - start_time))
+                                              NO_SOLUTION if solution_path == NO_SOLUTION else len(solution_path),
+                                              search_path_len, end_time - start_time))
 
 
 def prepare_performance_file(algorithm: str, heuristic: str):
