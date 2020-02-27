@@ -6,9 +6,9 @@
 # Copyright (c) 2020-2021 Team Artificial Incompetence, COMP 472
 # All rights reserved.
 # -----------------------------------------------------------
-from typing import List, Tuple
+from typing import List, Set
 
-from numpy.core.records import ndarray
+import numpy
 
 NO_SOLUTION = 'no solution'
 DOUBLE_PRESS = -1
@@ -35,25 +35,25 @@ class Node:
     its depth, h(n) and path from the root node
     """
     # Fields required by all algorithms
-    grid: ndarray = None
-    s_grid: str = ''
-    depth: int = 0
-    path_from_root: List[str] = []
+    grid: numpy.ndarray
+    s_grid: str
+    depth: int
+    path_from_root: List[str]
 
     # Fields only required by informed heuristics
-    hn: float = 0.0
-    black_tokens = 0
-    move_history: List[Tuple[int, int]] = []
+    hn: float
+    black_tokens: int
+    move_history: Set[str]
 
     def __init__(self,
-                 grid: ndarray,
+                 grid: numpy.ndarray,
                  s_grid: str,
                  depth: int,
                  path_from_root: List[str],
                  # optional, only for informed search
                  hn: float = 0,
                  black_tokens: int = 0,
-                 move_history: List[Tuple[int, int]] = None):
+                 move_history: Set[str] = None):
         """
         Generate Node object
         :param grid: 2D numpy array representation of the state

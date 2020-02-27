@@ -6,7 +6,7 @@
 # Copyright (c) 2020-2021 Team Artificial Incompetence, COMP 472
 # All rights reserved.
 # -----------------------------------------------------------
-from typing import List, Tuple
+from typing import Set
 
 import constant
 from constant import DOUBLE_PRESS
@@ -15,8 +15,8 @@ from constant import DOUBLE_PRESS
 def get_heuristic(heuristic_algorithm: str,
                   parent_black_tokens: int,
                   black_token_diff: int,
-                  move_history: List[Tuple[int, int]] = [],
-                  new_move: Tuple[int, int] = (0, 0)) -> float:
+                  move_history: Set[str],
+                  new_move) -> float:
     """
     Get h(n) for a given Node, given the heuristic algorithm
     :param parent_black_tokens: Number of black token of the parent node
@@ -60,9 +60,9 @@ def get_div_by_5_heuristic(parent_black_tokens: int, black_token_diff: int) -> f
 
 def get_no_double_press_heuristic(parent_black_tokens: int,
                                   black_token_diff: int,
-                                  move_history: List[Tuple[int, int]],
-                                  new_move: Tuple[int, int]) -> float:
+                                  move_history: Set[str],
+                                  new_move: str) -> float:
     if new_move not in move_history:
-        return get_total_count_heuristic(parent_black_tokens, black_token_diff)
+        return get_div_by_5_heuristic(parent_black_tokens, black_token_diff)
 
     return DOUBLE_PRESS

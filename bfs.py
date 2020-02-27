@@ -12,7 +12,6 @@ from heapq import heappush, heappop
 from typing import List, Tuple, Set
 
 import numpy as np
-from numpy.core.multiarray import ndarray
 
 import constant
 from constant import NO_SOLUTION, ZERO_HEURISTIC, COUNT_HEURISTIC, DIV_BY_5_HEURISTIC, \
@@ -42,7 +41,7 @@ def main(file_path):
             execute_bfs(grid, goal, max_l, puzzle_number, heuristic)
 
 
-def execute_bfs(grid: ndarray,
+def execute_bfs(grid: np.ndarray,
                 goal: str,
                 max_l: int,
                 puzzle_number: int,
@@ -73,8 +72,8 @@ def execute_bfs(grid: ndarray,
     s_grid = grid_to_string(grid)
     path = ['{}   {}'.format(0, s_grid)]  # adds the initial board state to the grid
     num_black_tokens = s_grid.count('1')
-    hn = get_heuristic(heuristic_algorithm, num_black_tokens, 0)
-    root_node = Node(grid, s_grid, 1, path, hn, num_black_tokens, [])
+    hn = get_heuristic(heuristic_algorithm, num_black_tokens, 0, set(), '')
+    root_node = Node(grid, s_grid, 1, path, hn, num_black_tokens, set())
 
     heappush(open_list, (root_node.get_hn(), get_white_token_score(s_grid), root_node))
     open_set.add(s_grid)
