@@ -6,26 +6,24 @@
 # Copyright (c) 2020-2021 Team Artificial Incompetence, COMP 472
 # All rights reserved.
 # -----------------------------------------------------------
-from typing import List
-
-import numpy
-from numpy.core.multiarray import ndarray
+from typing import List, Tuple
 
 import constant
+from constant import DOUBLE_PRESS
 
 
 def get_heuristic(heuristic_algorithm: str,
                   parent_black_tokens: int,
                   black_token_diff: int,
-                  grid: numpy.ndarray,
-                  path: List[str]) -> float:
+                  move_history: List[Tuple[int, int]] = [],
+                  new_move: Tuple[int, int] = (0, 0)) -> float:
     """
     Get h(n) for a given Node, given the heuristic algorithm
     :param parent_black_tokens: Number of black token of the parent node
     :param black_token_diff: Difference on black tokens after move
     :param heuristic_algorithm: Algorithm used to calculate heuristic
-    :param grid: 2D numpy array representation of the state
-    :param path: Path from root to the given state
+    :param move_history: List of moves done from the root node
+    :param new_move: New move done for this child
     :return: h(n)
     """
     if heuristic_algorithm == constant.ZERO_HEURISTIC:
@@ -35,7 +33,7 @@ def get_heuristic(heuristic_algorithm: str,
     elif heuristic_algorithm == constant.DIV_BY_5_HEURISTIC:
         return get_div_by_5_heuristic(parent_black_tokens, black_token_diff)
     elif heuristic_algorithm == constant.NO_DOUBLE_PRESS_HEURISTIC:
-        return get_no_double_press_heuristic(parent_black_tokens, black_token_diff, grid, path)
+        return get_no_double_press_heuristic(parent_black_tokens, black_token_diff, move_history, new_move)
 
     return 0
 
@@ -60,9 +58,11 @@ def get_div_by_5_heuristic(parent_black_tokens: int, black_token_diff: int) -> f
     return get_total_count_heuristic(parent_black_tokens, black_token_diff) / 5
 
 
-# TODO
 def get_no_double_press_heuristic(parent_black_tokens: int,
                                   black_token_diff: int,
-                                  grid: ndarray,
-                                  path: List[str]) -> float:
-    return 0.0
+                                  move_history: List[Tuple[int, int]],
+                                  new_move: Tuple[int, int]) -> float:
+    if new_move not in move_history:
+        return get_total_count_heuristic(parent_black_tokens, black_token_diff)
+
+    return DOUBLE_PRESS
