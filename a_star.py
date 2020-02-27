@@ -113,9 +113,9 @@ def a_star(open_list: List[Tuple[float, int, Node]],
             print('Search path length: {}'.format(len(search_path)))
             print('Open list size: {}'.format(len(open_list)))
             return node.path_from_root
-        if len(search_path) < max_l:
-            evaluate_a_star_children(open_list, open_set, closed_set, node, heuristic)
-    return NO_SOLUTION
+        if len(search_path) >= max_l:
+            return NO_SOLUTION
+        evaluate_a_star_children(open_list, open_set, closed_set, node, heuristic)
 
 
 main('input.txt')
