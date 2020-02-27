@@ -170,21 +170,21 @@ def evaluate_a_star_children(open_list: List[Tuple[float, int, Node]],
         child_grid = np.copy(node.grid)
         diff_black_tokens = flip_token(child_grid, row, col)
         child_s_grid: str = grid_to_string(child_grid)
-        if child_s_grid not in open_set and child_s_grid not in closed_set:
+        child_move = (row, col)
+        child_hn: float = get_heuristic(heuristic_algorithm, node.black_tokens, diff_black_tokens,
+                                        node.move_history, child_move)
+        if child_hn != DOUBLE_PRESS and child_s_grid not in open_set and child_s_grid not in closed_set:
             child_path = copy.deepcopy(node.path_from_root)
             child_path.append(get_solution_move(row, col, child_s_grid))
-            child_move = (row, col)
             child_moves = copy.deepcopy(node.move_history)
             child_moves.append(child_move)
             child_depth = node.depth + 1
-            child_hn: float = get_heuristic(heuristic_algorithm, node.black_tokens, diff_black_tokens,
-                                            node.move_history, child_move)
-            if child_hn != DOUBLE_PRESS:
-                child_node = Node(child_grid, child_s_grid, child_depth, child_path, child_hn,
-                                  node.black_tokens + diff_black_tokens, child_moves)
-                # Add child to open set and priority queue
-                heappush(open_list, (child_node.get_fn(), get_white_token_score(child_s_grid), child_node))
-                open_set.add(child_s_grid)
+
+            child_node = Node(child_grid, child_s_grid, child_depth, child_path, child_hn,
+                              node.black_tokens + diff_black_tokens, child_moves)
+            # Add child to open set and priority queue
+            heappush(open_list, (child_node.get_fn(), get_white_token_score(child_s_grid), child_node))
+            open_set.add(child_s_grid)
 
 
 def evaluate_bfs_children(open_list: List[Tuple[float, int, Node]],
@@ -205,21 +205,20 @@ def evaluate_bfs_children(open_list: List[Tuple[float, int, Node]],
         child_grid = np.copy(node.grid)
         diff_black_tokens = flip_token(child_grid, row, col)
         child_s_grid: str = grid_to_string(child_grid)
-        if child_s_grid not in open_set and child_s_grid not in closed_set:
+        child_move = (row, col)
+        child_hn: float = get_heuristic(heuristic_algorithm, node.black_tokens, diff_black_tokens,
+                                        node.move_history, child_move)
+        if child_hn != DOUBLE_PRESS and child_s_grid not in open_set and child_s_grid not in closed_set:
             child_path = copy.deepcopy(node.path_from_root)
             child_path.append(get_solution_move(row, col, child_s_grid))
-            child_move = (row, col)
             child_moves = copy.deepcopy(node.move_history)
             child_moves.append(child_move)
-            child_hn: float = get_heuristic(heuristic_algorithm, node.black_tokens, diff_black_tokens,
-                                            node.move_history, child_move)
 
-            if child_hn != DOUBLE_PRESS:
-                child_node = Node(child_grid, child_s_grid, node.depth, child_path, child_hn,
-                                  node.black_tokens + diff_black_tokens, child_moves)
-                # Add child to open set and priority queue
-                heappush(open_list, (child_node.get_hn(), get_white_token_score(child_s_grid), child_node))
-                open_set.add(child_s_grid)
+            child_node = Node(child_grid, child_s_grid, node.depth, child_path, child_hn,
+                              node.black_tokens + diff_black_tokens, child_moves)
+            # Add child to open set and priority queue
+            heappush(open_list, (child_node.get_hn(), get_white_token_score(child_s_grid), child_node))
+            open_set.add(child_s_grid)
 
 
 def get_white_token_score(s_grid: str) -> int:
