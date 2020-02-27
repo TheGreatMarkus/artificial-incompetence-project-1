@@ -6,8 +6,9 @@
 # Copyright (c) 2020-2021 Team Artificial Incompetence, COMP 472
 # All rights reserved.
 # -----------------------------------------------------------
+import time
 import constant
-from constant import DFS_ALGORITHM
+from constant import DFS_ALGORITHM, ZERO_HEURISTIC
 from utils import *
 from utils import get_puzzle_info
 
@@ -18,6 +19,7 @@ def main(file_path):
     :param (string) file_path: relative path to the input file
     :return: void
     """
+    prepare_performance_file(DFS_ALGORITHM, ZERO_HEURISTIC)
     with open(file_path) as fp:
         for puzzle_number, puzzle in enumerate(fp):
             max_d, max_l, grid, goal = get_puzzle_info(puzzle)
@@ -45,8 +47,12 @@ def execute_dfs(grid, max_d, goal, puzzle_number):
     root = Node(grid, s_grid, 1, 0, 0, path_to_root)
     open_list.append(root)
     open_set.add(s_grid)
+    start_time = time.time()
     solution_path = dfs(open_list, open_set, closed_dict, search_path, goal, max_d)
+    end_time = time.time()
     write_results(solution_path, search_path, puzzle_number, DFS_ALGORITHM)
+    gather_performance(puzzle_number, np.size(grid, 0), len(solution_path), len(search_path),
+                       start_time, end_time, DFS_ALGORITHM, ZERO_HEURISTIC)
     print('Found no solution' if solution_path == constant.NO_SOLUTION
           else 'Found result in {} moves'.format(len(solution_path) - 1))
 
