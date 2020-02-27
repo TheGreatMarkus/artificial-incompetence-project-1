@@ -6,14 +6,12 @@ Created on Sun Feb 23 14:55:49 2020
 @author: matthewmassey
 """
 
-
 import sys
 import time
 from heapq import heappush, heappop
 from typing import List, Tuple, Set
 
 import numpy as np
-from numpy.core.multiarray import ndarray
 
 import constant
 from constant import NO_SOLUTION, ZERO_HEURISTIC, COUNT_HEURISTIC, DIV_BY_5_HEURISTIC, \
@@ -21,16 +19,15 @@ from constant import NO_SOLUTION, ZERO_HEURISTIC, COUNT_HEURISTIC, DIV_BY_5_HEUR
 from heuristic import get_heuristic
 from utils import get_puzzle_info, grid_to_string, write_results, get_search_move, evaluate_bfs_children, \
     get_white_token_score, prepare_performance_file, gather_performance
-    
-    
-    
+
+
 def main(file_path):
     """
     Read file, retrieve puzzle info, and execute bfs for each puzzle
     :param (string) file_path: relative path the input file
     :return: void
     """
-    #Uses input heuristic type entered with file name as parameter to execute BFS
+    # Uses input heuristic type entered with file name as parameter to execute BFS
     heuristics = [ZERO_HEURISTIC, COUNT_HEURISTIC, DIV_BY_5_HEURISTIC, NO_DOUBLE_PRESS_HEURISTIC]
     if len(sys.argv) < 2 or sys.argv[1] not in heuristics:
         print('Invalid heuristic. Accepted heuristics are: {}'.format(heuristics))
@@ -44,11 +41,11 @@ def main(file_path):
             execute_bfs(grid, goal, max_l, puzzle_number, heuristic)
 
 
-def execute_bfs(grid: ndarray,
-                   goal: str,
-                   max_l: int,
-                   puzzle_number: int,
-                   heuristic_algorithm: str):
+def execute_bfs(grid: np.ndarray,
+                goal: str,
+                max_l: int,
+                puzzle_number: int,
+                heuristic_algorithm: str):
     """
     Wrapper function to run bfs
     :param grid: numpy 2D array representation of the input board.
@@ -67,16 +64,16 @@ def execute_bfs(grid: ndarray,
     Node: board state
     """
     open_list: List[Tuple[float, int, Node]] = []
-    open_set = set() #path needed
-    closed_set = set() #nodes already visited
+    open_set = set()  # path needed
+    closed_set = set()  # nodes already visited
     search_path: List[str] = []
 
     # initialize root node information
     s_grid = grid_to_string(grid)
-    path = ['{}   {}'.format(0, s_grid)]#adds the initial board state to the grid
+    path = ['{}   {}'.format(0, s_grid)]  # adds the initial board state to the grid
     num_black_tokens = s_grid.count('1')
-    hn = get_heuristic(heuristic_algorithm, num_black_tokens, 0, grid, path)
-    root_node = Node(grid, s_grid, 1, hn, num_black_tokens, path)
+    hn = get_heuristic(heuristic_algorithm, num_black_tokens, 0, set(), '')
+    root_node = Node(grid, s_grid, 1, path, hn, num_black_tokens, set())
 
     heappush(open_list, (root_node.get_hn(), get_white_token_score(s_grid), root_node))
     open_set.add(s_grid)
@@ -89,14 +86,15 @@ def execute_bfs(grid: ndarray,
                        start_time, end_time, BEST_FIRST_ALGORITHM, heuristic_algorithm)
     print('Found no solution' if solution_path == constant.NO_SOLUTION
           else 'Found solution in {} moves'.format(len(solution_path) - 1))
-    
+
+
 def bfs(open_list: List[Tuple[float, int, Node]],
-           open_set: Set[str],
-           closed_set: Set[str],
-           search_path: List[str],
-           goal_s_grid,
-           max_l,
-           heuristic) -> List[str]:
+        open_set: Set[str],
+        closed_set: Set[str],
+        search_path: List[str],
+        goal_s_grid,
+        max_l,
+        heuristic) -> List[str]:
     """
     Runs the BFS search algorithm
     :param open_list: Priority Queue containing all discovered nodes
@@ -125,5 +123,6 @@ def bfs(open_list: List[Tuple[float, int, Node]],
         if len(search_path) < max_l:
             evaluate_bfs_children(open_list, open_set, closed_set, node, heuristic)
     return NO_SOLUTION
+
 
 main('input.txt')

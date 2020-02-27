@@ -16,4 +16,4 @@ for i in range(moves):
     flip_token(grid, row, col)
 
 print(grid)
-print('{} 9999 9999 {}'.format(n, grid_to_string(grid).replace(' ', '')))
+print('{} {} 5000 {}'.format(n, moves + 1, grid_to_string(grid).replace(' ', '')))

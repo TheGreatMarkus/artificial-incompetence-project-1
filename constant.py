@@ -6,11 +6,12 @@
 # Copyright (c) 2020-2021 Team Artificial Incompetence, COMP 472
 # All rights reserved.
 # -----------------------------------------------------------
-from typing import List
+from typing import List, Set
 
-from numpy.core.records import ndarray
+import numpy
 
 NO_SOLUTION = 'no solution'
+DOUBLE_PRESS = -1
 
 SEARCH_FILE = 'search.txt'
 SOLUTION_FILE = 'solution.txt'
@@ -33,28 +34,43 @@ class Node:
     Node containing the 2D numpy array and string representations of a grid state,
     its depth, h(n) and path from the root node
     """
-    grid: ndarray = None
-    s_grid: str = ''
-    depth: int = 0
-    hn: float = 0.0
-    black_tokens = 0
-    path_from_root: list = []
+    # Fields required by all algorithms
+    grid: numpy.ndarray
+    s_grid: str
+    depth: int
+    path_from_root: List[str]
 
-    def __init__(self, grid: ndarray, s_grid: str, depth: int, hn: float, black_tokens: int, path_from_root: List[str]):
+    # Fields only required by informed heuristics
+    hn: float
+    black_tokens: int
+    move_history: Set[str]
+
+    def __init__(self,
+                 grid: numpy.ndarray,
+                 s_grid: str,
+                 depth: int,
+                 path_from_root: List[str],
+                 # optional, only for informed search
+                 hn: float = 0,
+                 black_tokens: int = 0,
+                 move_history: Set[str] = None):
         """
-        Create Node object
+        Generate Node object
         :param grid: 2D numpy array representation of the state
         :param s_grid: String representation of the state
         :param depth: Depth of the state
-        :param hn: h(n) of the state
         :param path_from_root: Path from the root to the state
+        :param hn: h(n) of the state
+        :param black_tokens: Number of black tokens in the state
+        :param move_history: history of (row,col) moves from the root node
         """
         self.grid = grid
         self.s_grid = s_grid
         self.depth = depth
+        self.path_from_root = path_from_root
         self.hn = hn
         self.black_tokens = black_tokens
-        self.path_from_root = path_from_root
+        self.move_history = move_history
 
     def get_hn(self):
         return self.hn

@@ -12,7 +12,6 @@ from heapq import heappush, heappop
 from typing import List, Tuple, Set
 
 import numpy as np
-from numpy.core.multiarray import ndarray
 
 import constant
 from constant import NO_SOLUTION, ZERO_HEURISTIC, COUNT_HEURISTIC, DIV_BY_5_HEURISTIC, \
@@ -41,7 +40,7 @@ def main(file_path):
             execute_a_star(grid, goal, max_l, puzzle_number, heuristic)
 
 
-def execute_a_star(grid: ndarray,
+def execute_a_star(grid: np.ndarray,
                    goal: str,
                    max_l: int,
                    puzzle_number: int,
@@ -67,8 +66,8 @@ def execute_a_star(grid: ndarray,
     s_grid = grid_to_string(grid)
     path = ['{}   {}'.format(0, s_grid)]
     num_black_tokens = s_grid.count('1')
-    hn = get_heuristic(heuristic_algorithm, num_black_tokens, 0, grid, path)
-    root_node = Node(grid, s_grid, 1, hn, num_black_tokens, path)
+    hn = get_heuristic(heuristic_algorithm, num_black_tokens, 0, set(), '')
+    root_node = Node(grid, s_grid, 1, path, hn, num_black_tokens, set())
 
     heappush(open_list, (root_node.get_fn(), get_white_token_score(s_grid), root_node))
     open_set.add(s_grid)

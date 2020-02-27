@@ -7,8 +7,8 @@
 # All rights reserved.
 # -----------------------------------------------------------
 import time
+
 import constant
-from constant import DFS_ALGORITHM, ZERO_HEURISTIC
 from utils import *
 from utils import get_puzzle_info
 
@@ -44,7 +44,7 @@ def execute_dfs(grid, max_d, goal, puzzle_number):
     s_grid = grid_to_string(grid)
     path_to_root = ['{}   {}'.format(0, s_grid)]
 
-    root = Node(grid, s_grid, 1, 0, 0, path_to_root)
+    root = Node(grid, s_grid, 1, path_to_root)
     open_list.append(root)
     open_set.add(s_grid)
     start_time = time.time()
