@@ -7,9 +7,11 @@
 # All rights reserved.
 # -----------------------------------------------------------
 import sys
+import time
 from heapq import heappush, heappop
 from typing import List, Tuple, Set
 
+import numpy as np
 from numpy.core.multiarray import ndarray
 
 import constant
@@ -17,7 +19,7 @@ from constant import NO_SOLUTION, ZERO_HEURISTIC, COUNT_HEURISTIC, DIV_BY_5_HEUR
     NO_DOUBLE_PRESS_HEURISTIC, Node, A_STAR_ALGORITHM
 from heuristic import get_heuristic
 from utils import get_puzzle_info, grid_to_string, write_results, get_search_move, evaluate_a_star_children, \
-    get_white_token_score
+    get_white_token_score, prepare_performance_file, gather_performance
 
 
 def main(file_path):
@@ -32,7 +34,7 @@ def main(file_path):
         sys.exit()
 
     heuristic = sys.argv[1]
-
+    prepare_performance_file(A_STAR_ALGORITHM, heuristic)
     with open(file_path) as puzzle_file:
         for puzzle_number, puzzle in enumerate(puzzle_file):
             max_d, max_l, grid, goal = get_puzzle_info(puzzle)
@@ -71,8 +73,12 @@ def execute_a_star(grid: ndarray,
     heappush(open_list, (root_node.get_fn(), get_white_token_score(s_grid), root_node))
     open_set.add(s_grid)
 
+    start_time = time.time()
     solution_path = a_star(open_list, open_set, closed_set, search_path, goal, max_l, heuristic_algorithm)
+    end_time = time.time()
     write_results(solution_path, search_path, puzzle_number, A_STAR_ALGORITHM)
+    gather_performance(puzzle_number, np.size(grid, 0), len(solution_path), len(search_path),
+                       start_time, end_time, A_STAR_ALGORITHM, heuristic_algorithm)
     print('Found no solution' if solution_path == constant.NO_SOLUTION
           else 'Found solution in {} moves'.format(len(solution_path) - 1))
 
@@ -96,11 +102,9 @@ def a_star(open_list: List[Tuple[float, int, Node]],
     :return: Solution path if available, else returns a string indicating failure to find a solution
     """
     while len(open_list) > 0:
-
         # Pop node from priority queue
         node_tuple = heappop(open_list)
         node = node_tuple[2]
-
         # Update data structures
         open_set.remove(node.s_grid)
         closed_set.add(node.s_grid)

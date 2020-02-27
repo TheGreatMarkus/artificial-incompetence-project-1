@@ -14,6 +14,9 @@ NO_SOLUTION = 'no solution'
 
 SEARCH_FILE = 'search.txt'
 SOLUTION_FILE = 'solution.txt'
+PERFORMANCE_DIR_TEMPLATE = 'performance/{}_{}.txt'
+PERFORMANCE_FILE_HEADER = '{}\t{}\t{}\t{}\t{}\n'
+PERFORMANCE_FILE_LINE = '{}\t{}\t{}\t{}\t{:.10f}\n'
 
 DFS_ALGORITHM = 'dfs'
 A_STAR_ALGORITHM = 'astar'

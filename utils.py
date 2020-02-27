@@ -8,12 +8,11 @@
 # -----------------------------------------------------------
 import copy
 import os
-from heapq import heappush
-from typing import List, Set, Tuple, Dict
-
 import numpy as np
+from heapq import heappush
+from typing import Set, Tuple, Dict
 
-from constant import A_STAR_ALGORITHM, BEST_FIRST_ALGORITHM, SOLUTION_FILE, SEARCH_FILE, Node
+from constant import *
 from heuristic import get_heuristic
 
 
@@ -184,11 +183,12 @@ def evaluate_a_star_children(open_list: List[Tuple[float, int, Node]],
             heappush(open_list, (child_node.get_fn(), get_white_token_score(child_s_grid), child_node))
             open_set.add(child_s_grid)
 
+
 def evaluate_bfs_children(open_list: List[Tuple[float, int, Node]],
-                             open_set: Set[str],
-                             closed_set: set,
-                             node: Node,
-                             heuristic_algorithm: str):
+                          open_set: Set[str],
+                          closed_set: set,
+                          node: Node,
+                          heuristic_algorithm: str):
     """
     Evaluate all of a node's children and add them to the open list
     :param open_list: Priority Queue containing all discovered nodes
@@ -207,7 +207,7 @@ def evaluate_bfs_children(open_list: List[Tuple[float, int, Node]],
             child_path.append(get_solution_move(row, col, child_s_grid))
             child_hn: float = get_heuristic(heuristic_algorithm, node.black_tokens, diff_black_tokens, child_grid,
                                             child_path)
-            
+
             child_node = Node(child_grid, child_s_grid, node.depth, child_hn, node.black_tokens + diff_black_tokens,
                               child_path)
 
@@ -247,3 +247,19 @@ def write_results(solution_path, search_path, puzzle_number, algorithm: str):
     with open(filename, 'w') as fp:
         for path in search_path:
             fp.write('{}\n'.format(path))
+
+
+def gather_performance(puzzle_number: int, grid_size: int, solution_path_len: int, search_path_len: int,
+                       start_time: float, end_time: float, algorithm: str, heuristic: str):
+    filename = PERFORMANCE_DIR_TEMPLATE.format(algorithm, heuristic)
+    with open(filename, 'a') as fp:
+        fp.write(PERFORMANCE_FILE_LINE.format(puzzle_number, grid_size,
+                                              solution_path_len, search_path_len, end_time - start_time))
+
+
+def prepare_performance_file(algorithm: str, heuristic: str):
+    filename = PERFORMANCE_DIR_TEMPLATE.format(algorithm, heuristic)
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    with open(filename, 'w') as fp:
+        fp.write(PERFORMANCE_FILE_HEADER.format('Puzzle number', 'Grid size',
+                                              'Solution length', 'Search length', 'Time taken (seconds)'))
