@@ -48,7 +48,7 @@ def execute_dfs(grid, max_d, goal, puzzle_number):
     open_list.append(root)
     open_set.add(s_grid)
     start_time = time.time()
-    solution_path = dfs(open_list, open_set, closed_dict, search_path, goal, max_d)
+    solution_path = dfs(open_list, open_set, closed_dict, search_path, goal, max_d, start_time + TIME_TO_SOLVE_PUZZLE_SECONDS)
     end_time = time.time()
     write_results(solution_path, search_path, puzzle_number, DFS_ALGORITHM)
     gather_performance(puzzle_number, np.size(grid, 0), solution_path, len(search_path),
@@ -57,7 +57,7 @@ def execute_dfs(grid, max_d, goal, puzzle_number):
           else 'Found result in {} moves'.format(len(solution_path) - 1))
 
 
-def dfs(open_list: List[Node], open_set, closed_dict, search_path, goal, max_d):
+def dfs(open_list: List[Node], open_set, closed_dict, search_path, goal, max_d, allowed_execution_time):
     """
     Iterative DFS.
     Each node in the open list carries: grid, level and a solution_path up to this grid
@@ -67,6 +67,7 @@ def dfs(open_list: List[Node], open_set, closed_dict, search_path, goal, max_d):
     :param (list) search_path: path up to the specific node
     :param (string) goal: goal configuration
     :param (int) max_d: maximum execution depth
+    :param allowed_execution_time: maximum time to solve a puzzle
     :return (list | string): path up to identified solution. List of paths or 'no solution'
     """
     while len(open_list) > 0:
@@ -79,6 +80,8 @@ def dfs(open_list: List[Node], open_set, closed_dict, search_path, goal, max_d):
             return node.path_from_root
         if node.depth < max_d:
             evaluate_dfs_children(open_list, open_set, closed_dict, node)
+        if time.time() >= allowed_execution_time:
+            return constant.NO_SOLUTION
     return constant.NO_SOLUTION
 
 

@@ -15,7 +15,7 @@ import numpy as np
 
 import constant
 from constant import NO_SOLUTION, ZERO_HEURISTIC, COUNT_HEURISTIC, DIV_BY_5_HEURISTIC, \
-    NO_DOUBLE_PRESS_HEURISTIC, Node, BEST_FIRST_ALGORITHM
+    NO_DOUBLE_PRESS_HEURISTIC, Node, BEST_FIRST_ALGORITHM, TIME_TO_SOLVE_PUZZLE_SECONDS
 from heuristic import get_heuristic
 from utils import get_puzzle_info, grid_to_string, write_results, get_search_move, evaluate_bfs_children, \
     get_white_token_score, prepare_performance_file, gather_performance
@@ -79,7 +79,8 @@ def execute_bfs(grid: np.ndarray,
     open_set.add(s_grid)
 
     start_time = time.time()
-    solution_path = bfs(open_list, open_set, closed_set, search_path, goal, max_l, heuristic_algorithm)
+    solution_path = bfs(open_list, open_set, closed_set, search_path, goal, max_l, heuristic_algorithm,
+                        start_time + TIME_TO_SOLVE_PUZZLE_SECONDS)
     end_time = time.time()
     write_results(solution_path, search_path, puzzle_number, BEST_FIRST_ALGORITHM)
     gather_performance(puzzle_number, np.size(grid, 0), solution_path, len(search_path),
@@ -94,7 +95,8 @@ def bfs(open_list: List[Tuple[float, int, Node]],
         search_path: List[str],
         goal_s_grid,
         max_l,
-        heuristic) -> List[str]:
+        heuristic,
+        allowed_execution_time) -> List[str]:
     """
     Runs the BFS search algorithm
     :param open_list: Priority Queue containing all discovered nodes
@@ -104,6 +106,7 @@ def bfs(open_list: List[Tuple[float, int, Node]],
     :param goal_s_grid: Goal grid string
     :param max_l: maximum search path length
     :param heuristic: Heuristic algorithm to be used for this run
+    :param allowed_execution_time: maximum time to solve a puzzle
     :return: Solution path if available, else returns a string indicating failure to find a solution
     """
     while len(open_list) > 0:
@@ -120,9 +123,9 @@ def bfs(open_list: List[Tuple[float, int, Node]],
             print('Search path length: {}'.format(len(search_path)))
             print('Open list size: {}'.format(len(open_list)))
             return node.path_from_root
-        if len(search_path) >= max_l:
+        if len(search_path) >= max_l or time.time() >= allowed_execution_time:
             return NO_SOLUTION
         evaluate_bfs_children(open_list, open_set, closed_set, node, heuristic)
-
+    return NO_SOLUTION
 
 main('input.txt')
