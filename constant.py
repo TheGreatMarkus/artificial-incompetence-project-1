@@ -12,6 +12,7 @@ import numpy
 
 NO_SOLUTION = 'no solution'
 DOUBLE_PRESS = -1
+TIME_TO_SOLVE_PUZZLE_SECONDS = 20 * 60
 
 SEARCH_FILE = 'search.txt'
 SOLUTION_FILE = 'solution.txt'
