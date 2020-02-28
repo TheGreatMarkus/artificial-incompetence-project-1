@@ -12,11 +12,11 @@ import numpy
 
 NO_SOLUTION = 'no solution'
 DOUBLE_PRESS = -1
-TIME_TO_SOLVE_PUZZLE_SECONDS = 20 * 60
+TIME_TO_SOLVE_PUZZLE_SECONDS = 3 * 60
 
-SEARCH_FILE_TEMPLATE = 'output/{}_{}_{}_search.txt'
-SOLUTION_FILE_TEMPLATE = 'output/{}_{}_{}_solution.txt'
-PERFORMANCE_DIR_TEMPLATE = 'performance/{}_{}.txt'
+SEARCH_FILE_TEMPLATE = 'output/search/{}/{}_{}_search.txt'
+SOLUTION_FILE_TEMPLATE = 'output/solution/{}/{}_{}_solution.txt'
+PERFORMANCE_DIR_TEMPLATE = 'output/performance/{}_{}_performance.txt'
 PERFORMANCE_FILE_HEADER = '{}\t{}\t{}\t{}\t{}\n'
 PERFORMANCE_FILE_LINE = '{}\t{}\t{}\t{}\t{:.10f}\n'
 

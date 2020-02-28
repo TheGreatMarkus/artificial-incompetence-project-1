@@ -19,7 +19,7 @@ def main(file_path):
     :param (string) file_path: relative path to the input file
     :return: void
     """
-    prepare_performance_file(DFS_ALGORITHM, ZERO_HEURISTIC)
+    prepare_performance_file(DFS_ALGORITHM, NO_HEURISTIC)
     with open(file_path) as fp:
         for puzzle_number, puzzle in enumerate(fp):
             max_d, max_l, grid, goal = get_puzzle_info(puzzle)

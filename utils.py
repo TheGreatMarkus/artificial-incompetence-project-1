@@ -241,7 +241,7 @@ def write_results(puzzle_number: int, algorithm: str, heuristic: str, solution_p
     :param heuristic: Heuristic used to solve puzzle
     :return: void
     """
-    filename = SOLUTION_FILE_TEMPLATE.format(puzzle_number, algorithm, heuristic)
+    filename = SOLUTION_FILE_TEMPLATE.format(heuristic, puzzle_number, algorithm)
     os.makedirs(os.path.dirname(filename), exist_ok=True)
     with open(filename, 'w') as fp:
         if type(solution_path) is str:
@@ -249,7 +249,8 @@ def write_results(puzzle_number: int, algorithm: str, heuristic: str, solution_p
         else:
             for path in solution_path:
                 fp.write('{}\n'.format(path))
-    filename = SEARCH_FILE_TEMPLATE.format(puzzle_number, algorithm, heuristic)
+    filename = SEARCH_FILE_TEMPLATE.format(heuristic, puzzle_number, algorithm)
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
     with open(filename, 'w') as fp:
         for path in search_path:
             fp.write('{}\n'.format(path))
