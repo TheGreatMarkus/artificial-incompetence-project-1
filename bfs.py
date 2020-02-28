@@ -82,7 +82,7 @@ def execute_bfs(grid: np.ndarray,
     solution_path = bfs(open_list, open_set, closed_set, search_path, goal, max_l, heuristic_algorithm)
     end_time = time.time()
     write_results(solution_path, search_path, puzzle_number, BEST_FIRST_ALGORITHM)
-    gather_performance(puzzle_number, np.size(grid, 0), len(solution_path), len(search_path),
+    gather_performance(puzzle_number, np.size(grid, 0), solution_path, len(search_path),
                        start_time, end_time, BEST_FIRST_ALGORITHM, heuristic_algorithm)
     print('Found no solution' if solution_path == constant.NO_SOLUTION
           else 'Found solution in {} moves'.format(len(solution_path) - 1))
@@ -120,9 +120,9 @@ def bfs(open_list: List[Tuple[float, int, Node]],
             print('Search path length: {}'.format(len(search_path)))
             print('Open list size: {}'.format(len(open_list)))
             return node.path_from_root
-        if len(search_path) < max_l:
-            evaluate_bfs_children(open_list, open_set, closed_set, node, heuristic)
-    return NO_SOLUTION
+        if len(search_path) >= max_l:
+            return NO_SOLUTION
+        evaluate_bfs_children(open_list, open_set, closed_set, node, heuristic)
 
 
 main('input.txt')

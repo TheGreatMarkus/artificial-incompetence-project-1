@@ -51,7 +51,7 @@ def execute_dfs(grid, max_d, goal, puzzle_number):
     solution_path = dfs(open_list, open_set, closed_dict, search_path, goal, max_d)
     end_time = time.time()
     write_results(solution_path, search_path, puzzle_number, DFS_ALGORITHM)
-    gather_performance(puzzle_number, np.size(grid, 0), len(solution_path), len(search_path),
+    gather_performance(puzzle_number, np.size(grid, 0), solution_path, len(search_path),
                        start_time, end_time, DFS_ALGORITHM, ZERO_HEURISTIC)
     print('Found no solution' if solution_path == constant.NO_SOLUTION
           else 'Found result in {} moves'.format(len(solution_path) - 1))
