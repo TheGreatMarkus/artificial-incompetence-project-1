@@ -231,16 +231,17 @@ def get_white_token_score(s_grid: str) -> int:
     return int(s_grid.replace(' ', ''), 2)
 
 
-def write_results(solution_path, search_path, puzzle_number, algorithm: str):
+def write_results(puzzle_number: int, algorithm: str, heuristic: str, solution_path, search_path: List[str]):
     """
     Dump solution_path and search_path to files
     :param solution_path: path up to identified solution. List of paths or 'no solution'
     :param search_path: close list of searched nodes
     :param puzzle_number: line number of the puzzle prepended to the name of the file
     :param algorithm: Algorithm used for the current run
+    :param heuristic: Heuristic used to solve puzzle
     :return: void
     """
-    filename = 'output/{}_{}_{}'.format(puzzle_number, algorithm, SOLUTION_FILE)
+    filename = SOLUTION_FILE_TEMPLATE.format(puzzle_number, algorithm, heuristic)
     os.makedirs(os.path.dirname(filename), exist_ok=True)
     with open(filename, 'w') as fp:
         if type(solution_path) is str:
@@ -248,7 +249,7 @@ def write_results(solution_path, search_path, puzzle_number, algorithm: str):
         else:
             for path in solution_path:
                 fp.write('{}\n'.format(path))
-    filename = 'output/{}_{}_{}'.format(puzzle_number, algorithm, SEARCH_FILE)
+    filename = SEARCH_FILE_TEMPLATE.format(puzzle_number, algorithm, heuristic)
     with open(filename, 'w') as fp:
         for path in search_path:
             fp.write('{}\n'.format(path))

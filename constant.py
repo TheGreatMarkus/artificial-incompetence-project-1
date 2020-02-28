@@ -14,8 +14,8 @@ NO_SOLUTION = 'no solution'
 DOUBLE_PRESS = -1
 TIME_TO_SOLVE_PUZZLE_SECONDS = 20 * 60
 
-SEARCH_FILE = 'search.txt'
-SOLUTION_FILE = 'solution.txt'
+SEARCH_FILE_TEMPLATE = 'output/{}_{}_{}_search.txt'
+SOLUTION_FILE_TEMPLATE = 'output/{}_{}_{}_solution.txt'
 PERFORMANCE_DIR_TEMPLATE = 'performance/{}_{}.txt'
 PERFORMANCE_FILE_HEADER = '{}\t{}\t{}\t{}\t{}\n'
 PERFORMANCE_FILE_LINE = '{}\t{}\t{}\t{}\t{:.10f}\n'
@@ -24,10 +24,11 @@ DFS_ALGORITHM = 'dfs'
 A_STAR_ALGORITHM = 'astar'
 BEST_FIRST_ALGORITHM = 'bfs'
 
-ZERO_HEURISTIC = 'zero_h'
-COUNT_HEURISTIC = 'count_h'
-DIV_BY_5_HEURISTIC = 'div_5_h'
-NO_DOUBLE_PRESS_HEURISTIC = 'no_dbl_press_h'
+NO_HEURISTIC = 'no-h'
+ZERO_HEURISTIC = 'zero-h'
+COUNT_HEURISTIC = 'count-h'
+DIV_BY_5_HEURISTIC = 'div-5-h'
+NO_DOUBLE_PRESS_HEURISTIC = 'no-dbl-press-h'
 
 
 class Node:

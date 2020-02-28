@@ -76,7 +76,7 @@ def execute_a_star(grid: np.ndarray,
     solution_path = a_star(open_list, open_set, closed_set, search_path, goal, max_l, heuristic_algorithm,
                            start_time + TIME_TO_SOLVE_PUZZLE_SECONDS)
     end_time = time.time()
-    write_results(solution_path, search_path, puzzle_number, A_STAR_ALGORITHM)
+    write_results(puzzle_number, A_STAR_ALGORITHM, heuristic_algorithm, solution_path, search_path)
     gather_performance(puzzle_number, np.size(grid, 0), solution_path, len(search_path),
                        start_time, end_time, A_STAR_ALGORITHM, heuristic_algorithm)
     print('Found no solution' if solution_path == constant.NO_SOLUTION
@@ -120,5 +120,6 @@ def a_star(open_list: List[Tuple[float, int, Node]],
             return NO_SOLUTION
         evaluate_a_star_children(open_list, open_set, closed_set, node, heuristic)
     return NO_SOLUTION
+
 
 main('input.txt')
